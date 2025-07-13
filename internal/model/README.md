@@ -1,0 +1,1 @@
+# Shared domain structs (e.g., Customer, Rental, etc.)
