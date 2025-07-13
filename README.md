@@ -1,5 +1,8 @@
 # video-rental-api
 
+## Changes
+* see docs/README.md
+
 ## Install
 1. This API uses the database from [pagila](https://github.com/devrimgunduz/pagila)
 2. In another directory, clone the pagila db, and run docker-compose up
