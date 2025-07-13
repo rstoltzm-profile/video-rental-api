@@ -7,15 +7,16 @@ import (
 
 func NewRouter() http.Handler {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", fooHandler)
+	mux.HandleFunc("/health", healthHandler)
 	return mux
 }
 
-func fooHandler(w http.ResponseWriter, r *http.Request) {
-	res, _ := json.Marshal(
-		map[string]string{
-			"body": "Hey from Server",
-		},
-	)
-	w.Write(res)
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	resp := map[string]string{
+		"status": "ok", // more common than "Health": "GOOD"
+	}
+	if err := json.NewEncoder(w).Encode(resp); err != nil {
+		http.Error(w, "Failed to encode health response", http.StatusInternalServerError)
+	}
 }
