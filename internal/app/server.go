@@ -23,5 +23,5 @@ func Run() error {
 	defer conn.Close(context.Background())
 
 	log.Printf("Starting server on port %s...", cfg.Port)
-	return http.ListenAndServe(":"+cfg.Port, api.NewRouter())
+	return http.ListenAndServe(":"+cfg.Port, api.NewRouter(conn))
 }
