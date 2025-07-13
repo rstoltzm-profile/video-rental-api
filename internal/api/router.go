@@ -14,11 +14,18 @@ func NewRouter(conn *pgx.Conn) http.Handler {
 	// health check
 	mux.HandleFunc("/health", healthHandler)
 
+	// v1 routes
+	v1 := http.NewServeMux()
+
 	// customer routes
 	repo := customer.NewRepository(conn)
 	svc := customer.NewService(repo)
 	handler := customer.NewHandler(svc)
-	mux.HandleFunc("/customers", handler.GetCustomers)
+	v1.HandleFunc("/customers", handler.GetCustomers)
+
+	// mount v1 under /v1/
+	mux.Handle("/v1/", http.StripPrefix("/v1", v1))
+
 	return mux
 }
 
