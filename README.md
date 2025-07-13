@@ -7,8 +7,16 @@ export PORT=8080
 ```
 
 ## Health Check
+```bash
+curl -i http://localhost:8080/health
+
 ```
-curl localhost:8080/health
+```text
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sun, 13 Jul 2025 22:10:35 GMT
+Content-Length: 16
+
 {"status":"ok"}
 ```
 
