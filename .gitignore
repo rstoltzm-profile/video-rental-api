@@ -1,0 +1,13 @@
+# Go
+bin/
+*.exe
+*.log
+*.test
+*.out
+
+# Dependency directories (Go modules)
+vendor/
+
+# IDEs
+.vscode/
+.idea/
