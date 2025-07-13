@@ -3,11 +3,22 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/jackc/pgx/v5"
+	"github.com/rstoltzm-profile/video-rental-api/internal/customer"
 )
 
-func NewRouter() http.Handler {
+func NewRouter(conn *pgx.Conn) http.Handler {
 	mux := http.NewServeMux()
+
+	// health check
 	mux.HandleFunc("/health", healthHandler)
+
+	// customer routes
+	repo := customer.NewRepository(conn)
+	svc := customer.NewService(repo)
+	handler := customer.NewHandler(svc)
+	mux.HandleFunc("/customers", handler.GetCustomers)
 	return mux
 }
 
