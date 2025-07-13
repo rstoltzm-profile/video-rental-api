@@ -3,6 +3,7 @@ package customer
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 )
 
 type Handler struct {
@@ -27,7 +28,12 @@ func (h *Handler) GetCustomers(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) GetCustomerByID(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	id := 25
+	idStr := r.PathValue("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid customer ID", http.StatusBadRequest)
+		return
+	}
 	customer, err := h.service.GetCustomerByID(r.Context(), id)
 	if err != nil {
 		http.Error(w, "Failed to fetch customers", http.StatusInternalServerError)
