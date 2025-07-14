@@ -21,6 +21,9 @@ jobs:
       with:
         go-version: '1.24'
 
+    - name: set env
+      run: export DATABASE_URL=${{secrets.DATABASE_URL}}
+
     - name: Build
       run: go build -v ./...
 
