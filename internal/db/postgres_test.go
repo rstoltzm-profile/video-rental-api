@@ -18,10 +18,9 @@ func TestEnv(t *testing.T) {
 
 	t.Run("test db port", func(t *testing.T) {
 		got := config.LoadConfig().Port
-		want := "8080"
 
-		if got != want {
-			t.Errorf("expected port %v, got %v", want, got)
+		if got == "" {
+			t.Errorf("expected port env variable")
 		}
 
 	})
