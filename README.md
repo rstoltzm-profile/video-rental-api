@@ -1,6 +1,6 @@
 # video-rental-api
 
-![overview](!overview.png)
+![overview](overview.png)
 
 ## Changes
 * see docs/README.md
