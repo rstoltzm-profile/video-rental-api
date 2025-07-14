@@ -20,7 +20,9 @@ http://localhost:8080/health
 ```
 
 ### Customer Routes
-* http://localhost:8080/v1/
+```
+http://localhost:8080/v1/
+```
 
 | Method | Path | Description |
 | ------ | ---- | ----------- |
