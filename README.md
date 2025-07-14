@@ -3,7 +3,7 @@
 ![overview](overview.png)
 
 ## Changes
-* [Change log in Docs](docs/README.md)
+* [Change log in Docs](docs/)
 
 ## Install
 1. This API uses the database from [pagila](https://github.com/devrimgunduz/pagila)
