@@ -1,4 +1,4 @@
-# 1 - Makefile binaries
+# 3 - Makefile binaries
 
 ✅ Summary:
 - Add basic Makefile

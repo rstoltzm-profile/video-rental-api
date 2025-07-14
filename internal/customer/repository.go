@@ -2,6 +2,7 @@ package customer
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/jackc/pgx/v5"
 )
@@ -13,6 +14,7 @@ type Repository interface {
 	GetCityIDByName(ctx context.Context, tx pgx.Tx, cityName string) (int, error)
 	InsertAddress(ctx context.Context, tx pgx.Tx, address AddressInput, cityID int) (int, error)
 	InsertCustomer(ctx context.Context, tx pgx.Tx, req CreateCustomerRequest, addressID int) (*Customer, error)
+	DeleteCustomerByID(ctx context.Context, id int) error
 }
 
 type repository struct {
@@ -110,4 +112,18 @@ func (r *repository) InsertCustomer(ctx context.Context, tx pgx.Tx, req CreateCu
 		LastName:  req.LastName,
 		Email:     req.Email,
 	}, nil
+}
+
+func (r *repository) DeleteCustomerByID(ctx context.Context, id int) error {
+	cmdTag, err := r.conn.Exec(ctx,
+		`DELETE FROM customer WHERE customer_id = $1`,
+		id,
+	)
+	if err != nil {
+		return err
+	}
+	if cmdTag.RowsAffected() == 0 {
+		return fmt.Errorf("no customer found with ID %d", id)
+	}
+	return nil
 }

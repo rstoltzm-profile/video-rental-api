@@ -30,10 +30,32 @@ else
     exit 1
 fi
 
-echo "🎉 All integration tests passed!"
-
 # Test 4: Add customer /v1/customers
-curl -i \
-  -X POST http://localhost:8080/v1/customers \
+echo -n "✅ POST /v1/customers ... "
+
+CREATE_RESPONSE=$(curl -s -X POST $BASE_URL/v1/customers \
   -H "Content-Type: application/json" \
-  --data @test/customer.json
+  --data @test/customer.json)
+
+CUSTOMER_ID=$(echo "$CREATE_RESPONSE" | jq -r '.id')
+
+if [[ "$CUSTOMER_ID" =~ ^[0-9]+$ ]]; then
+  echo "OK (created customer ID = $CUSTOMER_ID)"
+else
+  echo "FAIL - could not extract customer ID"
+  echo "$CREATE_RESPONSE"
+  exit 1
+fi
+
+
+# Test 5: Delete /v1/customers/1
+echo -n "✅ DELETE /v1/customers/$CUSTOMER_ID ... "
+
+DELETE_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE $BASE_URL/v1/customers/$CUSTOMER_ID)
+
+if [ "$DELETE_STATUS" -eq 204 ]; then
+  echo "OK"
+else
+  echo "FAIL - unexpected status code: $DELETE_STATUS"
+  exit 1
+fi

@@ -24,6 +24,7 @@ func NewRouter(conn *pgx.Conn) http.Handler {
 	v1.HandleFunc("GET /customers", handler.GetCustomers)
 	v1.HandleFunc("GET /customers/{id}", handler.GetCustomerByID)
 	v1.HandleFunc("POST /customers", handler.CreateCustomer)
+	v1.HandleFunc("DELETE /customers/{id}", handler.DeleteCustomerByID)
 
 	// mount v1 under /v1/
 	mux.Handle("/v1/", http.StripPrefix("/v1", v1))

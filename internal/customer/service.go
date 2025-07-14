@@ -9,6 +9,7 @@ type Service interface {
 	GetCustomers(ctx context.Context) ([]Customer, error)
 	GetCustomerByID(ctx context.Context, id int) (Customer, error)
 	CreateCustomer(ctx context.Context, req CreateCustomerRequest) (*Customer, error)
+	DeleteCustomerByID(ctx context.Context, id int) error
 }
 
 type service struct {
@@ -57,4 +58,8 @@ func (s *service) CreateCustomer(ctx context.Context, req CreateCustomerRequest)
 	}
 
 	return customer, nil
+}
+
+func (s *service) DeleteCustomerByID(ctx context.Context, id int) error {
+	return s.repo.DeleteCustomerByID(ctx, id)
 }

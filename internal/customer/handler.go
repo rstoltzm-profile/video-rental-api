@@ -61,3 +61,20 @@ func (h *Handler) CreateCustomer(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(customer)
 }
+
+func (h *Handler) DeleteCustomerByID(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	idStr := r.PathValue("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid customer ID", http.StatusBadRequest)
+		return
+	}
+	err = h.service.DeleteCustomerByID(r.Context(), id)
+	if err != nil {
+		http.Error(w, "Failed to delete customer", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent) // 204
+}
