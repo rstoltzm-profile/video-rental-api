@@ -21,8 +21,9 @@ func NewRouter(conn *pgx.Conn) http.Handler {
 	repo := customer.NewRepository(conn)
 	svc := customer.NewService(repo)
 	handler := customer.NewHandler(svc)
-	v1.HandleFunc("/customers", handler.GetCustomers)
+	v1.HandleFunc("GET /customers", handler.GetCustomers)
 	v1.HandleFunc("GET /customers/{id}", handler.GetCustomerByID)
+	v1.HandleFunc("POST /customers", handler.CreateCustomer)
 
 	// mount v1 under /v1/
 	mux.Handle("/v1/", http.StripPrefix("/v1", v1))

@@ -42,3 +42,19 @@ func (h *Handler) GetCustomerByID(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(customer)
 }
+
+func (h *Handler) CreateCustomer(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	var req CreateCustomerRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+	customer, err := h.service.CreateCustomer(r.Context(), req)
+	if err != nil {
+		http.Error(w, "Failed to create customer", http.StatusInternalServerError)
+		return
+	}
+	json.NewEncoder(w).Encode(customer)
+}

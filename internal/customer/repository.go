@@ -9,6 +9,9 @@ import (
 type Repository interface {
 	GetAll(ctx context.Context) ([]Customer, error)
 	GetByID(ctx context.Context, id int) (Customer, error)
+	BeginTx(ctx context.Context) (pgx.Tx, error)
+	InsertAddress(ctx context.Context, tx pgx.Tx, address AddressInput) (int, error)
+	InsertCustomer(ctx context.Context, tx pgx.Tx, req CreateCustomerRequest, addressID int) (*Customer, error)
 }
 
 type repository struct {
@@ -45,4 +48,51 @@ func (r *repository) GetByID(ctx context.Context, id int) (Customer, error) {
 	).Scan(&c.ID, &c.FirstName, &c.LastName, &c.Email)
 
 	return c, err
+}
+
+func (r *repository) BeginTx(ctx context.Context) (pgx.Tx, error) {
+	return r.conn.Begin(ctx)
+}
+
+func (r *repository) InsertAddress(ctx context.Context, tx pgx.Tx, address AddressInput) (int, error) {
+	var id int
+	err := tx.QueryRow(ctx, `
+	INSERT INTO address (address, address2, district, city_id, postal_code, phone)
+	VALUES ($1, $2, $3, $4, $5, $6)
+	RETURNING address_id
+	`,
+		address.Address,
+		address.Address2,
+		address.District,
+		address.CityID,
+		address.PostalCode,
+		address.Phone,
+	).Scan(&id)
+	return id, err
+}
+
+func (r *repository) InsertCustomer(ctx context.Context, tx pgx.Tx, req CreateCustomerRequest, addressID int) (*Customer, error) {
+	var id int
+	err := tx.QueryRow(ctx, `
+		INSERT INTO customer (store_id, first_name, last_name, email, address_id, activebool, create_date, last_update, active)
+		VALUES ($1, $2, $3, $4, $5, TRUE, CURRENT_DATE, CURRENT_TIMESTAMP, 1)
+		RETURNING customer_id
+	`,
+		req.StoreID,
+		req.FirstName,
+		req.LastName,
+		req.Email,
+		addressID,
+	).Scan(&id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &Customer{
+		ID:        id,
+		FirstName: req.FirstName,
+		LastName:  req.LastName,
+		Email:     req.Email,
+	}, nil
 }

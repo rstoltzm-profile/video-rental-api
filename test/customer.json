@@ -1,0 +1,14 @@
+{
+  "store_id": 1,
+  "first_name": "John",
+  "last_name": "Doe",
+  "email": "john@example.com",
+  "address": {
+    "address": "123 Main St",
+    "address2": "",
+    "district": "Sind",
+    "city_id": 472,
+    "postal_code": "90210",
+    "phone": "555-1234"
+  }
+}
