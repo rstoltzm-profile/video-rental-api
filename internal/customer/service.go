@@ -2,6 +2,7 @@ package customer
 
 import (
 	"context"
+	"fmt"
 )
 
 type Service interface {
@@ -33,12 +34,19 @@ func (s *service) CreateCustomer(ctx context.Context, req CreateCustomerRequest)
 	}
 	defer tx.Rollback(ctx)
 
-	// Step 1: Insert Address
-	addressID, err := s.repo.InsertAddress(ctx, tx, req.Address)
+	// Get CityID
+	cityID, err := s.repo.GetCityIDByName(ctx, tx, req.Address.CityName)
+	if err != nil {
+		return nil, fmt.Errorf("invalid city name: %w", err)
+	}
+
+	// Insert Address
+	addressID, err := s.repo.InsertAddress(ctx, tx, req.Address, cityID)
 	if err != nil {
 		return nil, err
 	}
 
+	// Insert Customer
 	customer, err := s.repo.InsertCustomer(ctx, tx, req, addressID)
 	if err != nil {
 		return nil, err

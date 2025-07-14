@@ -10,7 +10,8 @@ type Repository interface {
 	GetAll(ctx context.Context) ([]Customer, error)
 	GetByID(ctx context.Context, id int) (Customer, error)
 	BeginTx(ctx context.Context) (pgx.Tx, error)
-	InsertAddress(ctx context.Context, tx pgx.Tx, address AddressInput) (int, error)
+	GetCityIDByName(ctx context.Context, tx pgx.Tx, cityName string) (int, error)
+	InsertAddress(ctx context.Context, tx pgx.Tx, address AddressInput, cityID int) (int, error)
 	InsertCustomer(ctx context.Context, tx pgx.Tx, req CreateCustomerRequest, addressID int) (*Customer, error)
 }
 
@@ -50,11 +51,25 @@ func (r *repository) GetByID(ctx context.Context, id int) (Customer, error) {
 	return c, err
 }
 
+func (r *repository) GetCityIDByName(ctx context.Context, tx pgx.Tx, cityName string) (int, error) {
+	var cityID int
+	err := r.conn.QueryRow(ctx,
+		`SELECT city_id FROM city where city = $1`,
+		cityName,
+	).Scan(&cityID)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return cityID, err
+}
+
 func (r *repository) BeginTx(ctx context.Context) (pgx.Tx, error) {
 	return r.conn.Begin(ctx)
 }
 
-func (r *repository) InsertAddress(ctx context.Context, tx pgx.Tx, address AddressInput) (int, error) {
+func (r *repository) InsertAddress(ctx context.Context, tx pgx.Tx, address AddressInput, cityID int) (int, error) {
 	var id int
 	err := tx.QueryRow(ctx, `
 	INSERT INTO address (address, address2, district, city_id, postal_code, phone)
@@ -64,7 +79,7 @@ func (r *repository) InsertAddress(ctx context.Context, tx pgx.Tx, address Addre
 		address.Address,
 		address.Address2,
 		address.District,
-		address.CityID,
+		cityID,
 		address.PostalCode,
 		address.Phone,
 	).Scan(&id)
