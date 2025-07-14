@@ -13,22 +13,19 @@ export DATABASE_URL="postgres://postgres:123456@localhost:5432/postgres"
 export PORT=8080
 ```
 
-## Health Check
-```bash
-curl -i http://localhost:8080/health
-
+## API
+### Health Check
 ```
-```text
-HTTP/1.1 200 OK
-Content-Type: application/json
-Date: Sun, 13 Jul 2025 22:10:35 GMT
-Content-Length: 16
-
-{"status":"ok"}
+http://localhost:8080/health
 ```
 
-## Tests
-### Internal DB
-```
-go test ./internal/db
-```
+### Customer Routes
+* http://localhost:8080/v1/
+
+| Method | Path | Description |
+| ------ | ---- | ----------- |
+| GET | /customers | Get all customers |
+| GET | /customers/{id} | Get a customer by ID |
+| POST | /customers | Create a new customer|
+| DELETE | /customers/{id} | Delete customer by ID |
+
