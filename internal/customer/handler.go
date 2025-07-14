@@ -2,6 +2,7 @@ package customer
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 )
@@ -56,5 +57,7 @@ func (h *Handler) CreateCustomer(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to create customer", http.StatusInternalServerError)
 		return
 	}
+	w.Header().Set("Location", fmt.Sprintf("/v1/customers/%d", customer.ID))
+	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(customer)
 }

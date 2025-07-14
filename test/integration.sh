@@ -31,3 +31,9 @@ else
 fi
 
 echo "🎉 All integration tests passed!"
+
+# Test 4: Add customer /v1/customers
+curl -i \
+  -X POST http://localhost:8080/v1/customers \
+  -H "Content-Type: application/json" \
+  --data @test/customer.json
