@@ -5,12 +5,13 @@ set -euo pipefail
 BASE_URL="http://localhost:8080"
 
 echo "🔍 Running integration tests... requires jq"
-
+echo "## Server Tests"
 # Test 1: Health check
 echo -n "✅ /health ... "
 curl -s $BASE_URL/health | grep -q '"status":"ok"' && echo "OK" || (echo "FAIL" && exit 1)
 
-# Test 2: GET /v1/customers (expects non-empty list)
+echo "## Customer Tests"
+# Test 1: GET /v1/customers (expects non-empty list)
 echo -n "✅ /v1/customers ... "
 RESPONSE=$(curl -s $BASE_URL/v1/customers)
 if echo "$RESPONSE" | jq -e 'length > 0' > /dev/null; then
@@ -20,7 +21,7 @@ else
     exit 1
 fi
 
-# Test 3: GET /v1/customers/1 (expects ID = 1)
+# Test 2: GET /v1/customers/1 (expects ID = 1)
 echo -n "✅ /v1/customers/1 ... "
 RESPONSE=$(curl -s $BASE_URL/v1/customers/1)
 if echo "$RESPONSE" | jq -e '.id == 1' > /dev/null; then
@@ -30,7 +31,7 @@ else
     exit 1
 fi
 
-# Test 4: Add customer /v1/customers
+# Test 3: Add customer /v1/customers
 echo -n "✅ POST /v1/customers ... "
 
 CREATE_RESPONSE=$(curl -s -X POST $BASE_URL/v1/customers \
@@ -48,7 +49,7 @@ else
 fi
 
 
-# Test 5: Delete /v1/customers/1
+# Test 4: Delete /v1/customers/1
 echo -n "✅ DELETE /v1/customers/$CUSTOMER_ID ... "
 
 DELETE_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE $BASE_URL/v1/customers/$CUSTOMER_ID)
@@ -58,4 +59,25 @@ if [ "$DELETE_STATUS" -eq 204 ]; then
 else
   echo "FAIL - unexpected status code: $DELETE_STATUS"
   exit 1
+fi
+
+echo "## Rental Tests"
+# Test 1: GET /v1/rentals (expects non-empty list)
+echo -n "✅ /v1/rentals ... "
+RESPONSE=$(curl -s $BASE_URL/v1/rentals)
+if echo "$RESPONSE" | jq -e 'length > 0' > /dev/null; then
+    echo "OK"
+else
+    echo "FAIL - Expected non-empty customer list"
+    exit 1
+fi
+
+# Test 2: GET /v1/rentals?late=true (expects non-empty list)
+echo -n "✅ /v1/rentals?late=true ... "
+RESPONSE=$(curl -s $BASE_URL/v1/rentals?late=true)
+if echo "$RESPONSE" | jq -e 'length > 0' > /dev/null; then
+    echo "OK"
+else
+    echo "FAIL - Expected non-empty customer list"
+    exit 1
 fi
