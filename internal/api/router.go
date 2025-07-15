@@ -16,17 +16,8 @@ func NewRouter(conn *pgx.Conn) http.Handler {
 
 	// v1 routes
 	v1 := http.NewServeMux()
+	registerCustomerRoutes(v1, conn)
 
-	// customer routes
-	repo := customer.NewRepository(conn)
-	svc := customer.NewService(repo, repo, repo)
-	handler := customer.NewHandler(svc)
-	v1.HandleFunc("GET /customers", handler.GetCustomers)
-	v1.HandleFunc("GET /customers/{id}", handler.GetCustomerByID)
-	v1.HandleFunc("POST /customers", handler.CreateCustomer)
-	v1.HandleFunc("DELETE /customers/{id}", handler.DeleteCustomerByID)
-
-	// mount v1 under /v1/
 	mux.Handle("/v1/", http.StripPrefix("/v1", v1))
 
 	return mux
@@ -40,4 +31,14 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(resp); err != nil {
 		http.Error(w, "Failed to encode health response", http.StatusInternalServerError)
 	}
+}
+
+func registerCustomerRoutes(mux *http.ServeMux, conn *pgx.Conn) {
+	repo := customer.NewRepository(conn)
+	svc := customer.NewService(repo, repo, repo)
+	handler := customer.NewHandler(svc)
+	mux.HandleFunc("GET /customers", handler.GetCustomers)
+	mux.HandleFunc("GET /customers/{id}", handler.GetCustomerByID)
+	mux.HandleFunc("POST /customers", handler.CreateCustomer)
+	mux.HandleFunc("DELETE /customers/{id}", handler.DeleteCustomerByID)
 }
