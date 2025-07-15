@@ -19,7 +19,7 @@ func NewRouter(conn *pgx.Conn) http.Handler {
 
 	// customer routes
 	repo := customer.NewRepository(conn)
-	svc := customer.NewService(repo)
+	svc := customer.NewService(repo, repo, repo)
 	handler := customer.NewHandler(svc)
 	v1.HandleFunc("GET /customers", handler.GetCustomers)
 	v1.HandleFunc("GET /customers/{id}", handler.GetCustomerByID)

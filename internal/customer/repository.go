@@ -7,14 +7,26 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-type Repository interface {
+type CustomerReader interface {
 	GetAll(ctx context.Context) ([]Customer, error)
 	GetByID(ctx context.Context, id int) (Customer, error)
-	BeginTx(ctx context.Context) (pgx.Tx, error)
 	GetCityIDByName(ctx context.Context, tx pgx.Tx, cityName string) (int, error)
+}
+
+type CustomerWriter interface {
 	InsertAddress(ctx context.Context, tx pgx.Tx, address AddressInput, cityID int) (int, error)
 	InsertCustomer(ctx context.Context, tx pgx.Tx, req CreateCustomerRequest, addressID int) (*Customer, error)
 	DeleteCustomerByID(ctx context.Context, id int) error
+}
+
+type Repository interface {
+	CustomerReader
+	CustomerWriter
+	BeginTx(ctx context.Context) (pgx.Tx, error)
+}
+
+type TransactionManager interface {
+	BeginTx(ctx context.Context) (pgx.Tx, error)
 }
 
 type repository struct {
