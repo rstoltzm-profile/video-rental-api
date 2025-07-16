@@ -45,11 +45,30 @@ http://localhost:8080/v1/
 | GET | /rentals?customer_id={id} | Get rentals for customer |
 | GET | /rentals?customer_id={id}&late=true | Get late rentals for customer |
 
+### Inventory Routes
+```
+http://localhost:8080/v1/
+```
+
+| Method | Path | Description |
+| ------ | ---- | ----------- |
+| GET | /inventory | Get all inventory |
+| GET | /inventory?store_id=1 | Get all inventory by store_id |
+
+### Store Routes
+```
+http://localhost:8080/v1/
+```
+
+| Method | Path | Description |
+| ------ | ---- | ----------- |
+| GET | /stores/{id}/inventory/summary | Get Count of inventory by store  |
+
+
 ### Next Steps
 ```
 1. Add get rentals for name GET /rentals?first_name=John&last_name=Doe
-2. Add inventory router
-3. Add staff router
-4. Checkout a movie! Need to check if in inventory at the desired store
-5. Pay balance
+2. Add staff router
+3. Checkout a movie! Need to check if in inventory at the desired store
+4. Pay balance
 ```
