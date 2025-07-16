@@ -91,3 +91,13 @@ else
     echo "FAIL - Expected non-empty customer list"
     exit 1
 fi
+
+# Test 4: GET /v1/rentals?customer_id=1&late=true (expects non-empty list)
+echo -n "✅ /v1/rentals?customer_id=1&late=true ... "
+RESPONSE=$(curl -s $BASE_URL/v1/rentals?customer_id=373&late=true )
+if echo "$RESPONSE" | jq -e 'length > 0' > /dev/null; then
+    echo "OK"
+else
+    echo "FAIL - Expected non-empty customer list"
+    exit 1
+fi

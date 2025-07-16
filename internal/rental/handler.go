@@ -34,7 +34,9 @@ func (h *Handler) GetRentals(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if customerID != -1 {
+	if customerID != -1 && late == "true" {
+		rentals, err = h.service.GetLateRentalsByCustomerID(r.Context(), customerID)
+	} else if customerID != -1 {
 		rentals, err = h.service.GetRentalsByCustomerID(r.Context(), customerID)
 	} else if late == "true" {
 		rentals, err = h.service.GetRentals(r.Context())
