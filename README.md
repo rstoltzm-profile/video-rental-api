@@ -33,3 +33,11 @@ http://localhost:8080/v1/
 | POST | /customers | Create a new customer|
 | DELETE | /customers/{id} | Delete customer by ID |
 
+### Next Steps
+```
+1. Add get rentals for name GET /rentals?first_name=John&last_name=Doe
+2. Add inventory router
+3. Add staff router
+4. Checkout a movie! Need to check if in inventory at the desired store
+5. Pay balance
+```
