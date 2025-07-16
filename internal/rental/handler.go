@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 )
 
 type Handler struct {
@@ -16,12 +17,26 @@ func NewHandler(service Service) *Handler {
 
 func (h *Handler) GetRentals(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+
+	// Parameters
 	late := r.URL.Query().Get("late")
+	customerIDStr := r.URL.Query().Get("customer_id")
 
 	var rentals []Rental
 	var err error
+	customerID := -1
 
-	if late == "true" {
+	if customerIDStr != "" {
+		customerID, err = strconv.Atoi(customerIDStr)
+		if err != nil {
+			http.Error(w, "Invalid customer ID", http.StatusBadRequest)
+			return
+		}
+	}
+
+	if customerID != -1 {
+		rentals, err = h.service.GetRentalsByCustomerID(r.Context(), customerID)
+	} else if late == "true" {
 		rentals, err = h.service.GetRentals(r.Context())
 	} else {
 		rentals, err = h.service.GetLateRentals(r.Context())
