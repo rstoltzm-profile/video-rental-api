@@ -6,6 +6,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/rstoltzm-profile/video-rental-api/internal/customer"
+	"github.com/rstoltzm-profile/video-rental-api/internal/rental"
 )
 
 func NewRouter(conn *pgx.Conn) http.Handler {
@@ -17,9 +18,9 @@ func NewRouter(conn *pgx.Conn) http.Handler {
 	// v1 routes
 	v1 := http.NewServeMux()
 	registerCustomerRoutes(v1, conn)
+	registerRentalRoutes(v1, conn)
 
 	mux.Handle("/v1/", http.StripPrefix("/v1", v1))
-
 	return mux
 }
 
@@ -41,4 +42,11 @@ func registerCustomerRoutes(mux *http.ServeMux, conn *pgx.Conn) {
 	mux.HandleFunc("GET /customers/{id}", handler.GetCustomerByID)
 	mux.HandleFunc("POST /customers", handler.CreateCustomer)
 	mux.HandleFunc("DELETE /customers/{id}", handler.DeleteCustomerByID)
+}
+
+func registerRentalRoutes(mux *http.ServeMux, conn *pgx.Conn) {
+	repo := rental.NewRepository(conn)
+	svc := rental.NewService(repo, repo)
+	handler := rental.NewHandler(svc)
+	mux.HandleFunc("GET /rentals", handler.GetRentals)
 }
