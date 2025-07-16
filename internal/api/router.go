@@ -6,7 +6,9 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/rstoltzm-profile/video-rental-api/internal/customer"
+	"github.com/rstoltzm-profile/video-rental-api/internal/inventory"
 	"github.com/rstoltzm-profile/video-rental-api/internal/rental"
+	"github.com/rstoltzm-profile/video-rental-api/internal/store"
 )
 
 func NewRouter(conn *pgx.Conn) http.Handler {
@@ -19,6 +21,8 @@ func NewRouter(conn *pgx.Conn) http.Handler {
 	v1 := http.NewServeMux()
 	registerCustomerRoutes(v1, conn)
 	registerRentalRoutes(v1, conn)
+	registerInventoryRoutes(v1, conn)
+	registerStoreRoutes(v1, conn)
 
 	mux.Handle("/v1/", http.StripPrefix("/v1", v1))
 	return mux
@@ -49,4 +53,18 @@ func registerRentalRoutes(mux *http.ServeMux, conn *pgx.Conn) {
 	svc := rental.NewService(repo, repo)
 	handler := rental.NewHandler(svc)
 	mux.HandleFunc("GET /rentals", handler.GetRentals)
+}
+
+func registerInventoryRoutes(mux *http.ServeMux, conn *pgx.Conn) {
+	repo := inventory.NewRepository(conn)
+	svc := inventory.NewService(repo, repo)
+	handler := inventory.NewHandler(svc)
+	mux.HandleFunc("GET /inventory", handler.GetInventory)
+}
+
+func registerStoreRoutes(mux *http.ServeMux, conn *pgx.Conn) {
+	repo := store.NewRepository(conn)
+	svc := store.NewService(repo, repo)
+	handler := store.NewHandler(svc)
+	mux.HandleFunc("GET /stores/{id}/inventory/summary", handler.GetStoreInventorySummary)
 }
