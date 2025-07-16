@@ -1,0 +1,78 @@
+MVP loop is:
+Film browse/search
+Film availability
+Checkout
+Return
+View customer rentals
+
+✅ HIGH-PRIORITY NEXT STEPS (MVP)
+1. Implement Movie Listing / Search
+API endpoints:
+GET /films – List all films.
+GET /films/{id} – Get details of a specific film.
+GET /films/search?title=xyz – Search by title.
+Uses film, film_list, film_category, language, actor tables.
+
+2. Inventory Availability for a Film
+Check whether copies of a film are available to rent.
+API idea:
+GET /films/{id}/availability or
+GET /inventory/available?film_id=1&store_id=2
+Joins inventory, rental, and store. Useful for showing “in stock” in a given store.
+
+3. Create Rental Transaction (Checkout)
+Allow a customer to rent a movie.
+API:
+POST /rentals
+Payload: {customer_id, inventory_id, staff_id}
+You’ll insert into rental and maybe payment tables here.
+
+4. Return Movie
+Mark a rental as returned.
+API:
+POST /rentals/{id}/return
+(Updates rental.return_date)
+
+5. List Rentals by Customer
+API:
+GET /customers/{id}/rentals
+GET /customers/{id}/rentals?status=late
+Useful for showing customer rental history or late returns.
+
+6. Payment Integration (Basic)
+Record payments made by customers.
+API:
+POST /payments
+Payload: {rental_id, amount, customer_id, staff_id}
+Uses the payment table.
+
+7. Basic Auth (Session/Token)
+Authenticate staff or customers.
+Could start with simple token auth (even hardcoded for MVP).
+API:
+POST /login – returns token
+
+Middleware to secure rental endpoints (e.g. checkout)
+
+✅ OPTIONAL NICE-TO-HAVE (Post-MVP)
+🔹 Add new film/inventory (Admin/staff)
+POST /films
+POST /inventory
+(Restricted to staff/admin)
+
+🔹 Reporting endpoints
+Top rented films
+Most active customers
+Late returns
+
+🔹 Pagination / Filters
+For /films, /customers, /rentals
+Use ?limit=10&offset=20 or ?page=2&per_page=10
+
+
+⚙️ Developer/Infra To-Dos
+Add logging / error handling middleware
+Add request validation (e.g., validate JSON body fields)
+Add integration tests for endpoints
+Set up CORS config for frontend integration
+Dockerize your app if you haven't already
