@@ -68,7 +68,7 @@ RESPONSE=$(curl -s $BASE_URL/v1/rentals)
 if echo "$RESPONSE" | jq -e 'length > 0' > /dev/null; then
     echo "OK"
 else
-    echo "FAIL - Expected non-empty customer list"
+    echo "FAIL - Expected non-empty rentals list"
     exit 1
 fi
 
@@ -78,7 +78,7 @@ RESPONSE=$(curl -s $BASE_URL/v1/rentals?late=true)
 if echo "$RESPONSE" | jq -e 'length > 0' > /dev/null; then
     echo "OK"
 else
-    echo "FAIL - Expected non-empty customer list"
+    echo "FAIL - Expected non-empty rentals list"
     exit 1
 fi
 
@@ -88,7 +88,7 @@ RESPONSE=$(curl -s $BASE_URL/v1/rentals?customer_id=373)
 if echo "$RESPONSE" | jq -e 'length > 0' > /dev/null; then
     echo "OK"
 else
-    echo "FAIL - Expected non-empty customer list"
+    echo "FAIL - Expected non-empty rentals list"
     exit 1
 fi
 
@@ -98,6 +98,38 @@ RESPONSE=$(curl -s $BASE_URL/v1/rentals?customer_id=373&late=true )
 if echo "$RESPONSE" | jq -e 'length > 0' > /dev/null; then
     echo "OK"
 else
-    echo "FAIL - Expected non-empty customer list"
+    echo "FAIL - Expected non-empty rentals list"
+    exit 1
+fi
+
+echo "## Inventory Tests"
+# Test 1: GET /v1/inventory (expects non-empty list)
+echo -n "✅ /v1/inventory ... "
+RESPONSE=$(curl -s $BASE_URL/v1/inventory)
+if echo "$RESPONSE" | jq -e 'length > 0' > /dev/null; then
+    echo "OK"
+else
+    echo "FAIL - Expected non-empty inventory list"
+    exit 1
+fi
+
+# Test 2: GET /v1/inventory with store_id (expects non-empty list)
+echo -n "✅ /v1/inventory?store_id=1 ... "
+RESPONSE=$(curl -s $BASE_URL/v1/inventory?store_id=1)
+if echo "$RESPONSE" | jq -e 'length > 0' > /dev/null; then
+    echo "OK"
+else
+    echo "FAIL - Expected non-empty inventory list"
+    exit 1
+fi
+
+echo "## Store Tests"
+# Test 1: GET /v1/stores/1/inventory/summary (expects non-empty list)
+echo -n "✅ /v1/stores/1/inventory/summary ... "
+RESPONSE=$(curl -s $BASE_URL/v1/stores/1/inventory/summary)
+if echo "$RESPONSE" | jq -e 'length > 0' > /dev/null; then
+    echo "OK"
+else
+    echo "FAIL - Expected non-empty inventory list"
     exit 1
 fi
