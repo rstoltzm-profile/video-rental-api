@@ -33,6 +33,18 @@ http://localhost:8080/v1/
 | POST | /customers | Create a new customer|
 | DELETE | /customers/{id} | Delete customer by ID |
 
+### Rental Routes
+```
+http://localhost:8080/v1/
+```
+
+| Method | Path | Description |
+| ------ | ---- | ----------- |
+| GET | /rentals | Get all rentals |
+| GET | /rentals?late=true | Get all late rentals |
+| GET | /rentals?customer_id={id} | Get rentals for customer |
+| GET | /rentals?customer_id={id}&late=true | Get late rentals for customer |
+
 ### Next Steps
 ```
 1. Add get rentals for name GET /rentals?first_name=John&last_name=Doe
