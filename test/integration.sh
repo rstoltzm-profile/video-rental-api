@@ -10,6 +10,7 @@ echo "## Server Tests"
 echo -n "✅ /health ... "
 curl -s $BASE_URL/health | grep -q '"status":"ok"' && echo "OK" || (echo "FAIL" && exit 1)
 
+##########################################################
 echo "## Customer Tests"
 # Test 1: GET /v1/customers (expects non-empty list)
 echo -n "✅ /v1/customers ... "
@@ -48,7 +49,6 @@ else
   exit 1
 fi
 
-
 # Test 4: Delete /v1/customers/1
 echo -n "✅ DELETE /v1/customers/$CUSTOMER_ID ... "
 
@@ -61,6 +61,7 @@ else
   exit 1
 fi
 
+##########################################################
 echo "## Rental Tests"
 # Test 1: GET /v1/rentals (expects non-empty list)
 echo -n "✅ /v1/rentals ... "
@@ -102,6 +103,7 @@ else
     exit 1
 fi
 
+##########################################################
 echo "## Inventory Tests"
 # Test 1: GET /v1/inventory (expects non-empty list)
 echo -n "✅ /v1/inventory ... "
@@ -131,5 +133,17 @@ if echo "$RESPONSE" | jq -e 'length > 0' > /dev/null; then
     echo "OK"
 else
     echo "FAIL - Expected non-empty inventory list"
+    exit 1
+fi
+
+##########################################################
+echo "## Film Tests"
+# Test 1: GET /v1/films (expects non-empty list)
+echo -n "✅ /v1/films ... "
+RESPONSE=$(curl -s $BASE_URL/v1/films)
+if echo "$RESPONSE" | jq -e 'length > 0' > /dev/null; then
+    echo "OK"
+else
+    echo "FAIL - Expected non-empty films list"
     exit 1
 fi

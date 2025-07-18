@@ -6,6 +6,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/rstoltzm-profile/video-rental-api/internal/customer"
+	"github.com/rstoltzm-profile/video-rental-api/internal/film"
 	"github.com/rstoltzm-profile/video-rental-api/internal/inventory"
 	"github.com/rstoltzm-profile/video-rental-api/internal/rental"
 	"github.com/rstoltzm-profile/video-rental-api/internal/store"
@@ -23,6 +24,7 @@ func NewRouter(conn *pgx.Conn) http.Handler {
 	registerRentalRoutes(v1, conn)
 	registerInventoryRoutes(v1, conn)
 	registerStoreRoutes(v1, conn)
+	registerFilmRoutes(v1, conn)
 
 	mux.Handle("/v1/", http.StripPrefix("/v1", v1))
 	return mux
@@ -67,4 +69,11 @@ func registerStoreRoutes(mux *http.ServeMux, conn *pgx.Conn) {
 	svc := store.NewService(repo, repo)
 	handler := store.NewHandler(svc)
 	mux.HandleFunc("GET /stores/{id}/inventory/summary", handler.GetStoreInventorySummary)
+}
+
+func registerFilmRoutes(mux *http.ServeMux, conn *pgx.Conn) {
+	repo := film.NewRepository(conn)
+	svc := film.NewService(repo, repo)
+	handler := film.NewHandler(svc)
+	mux.HandleFunc("GET /films", handler.GetFilms)
 }
