@@ -8,6 +8,7 @@ import (
 
 type FilmReader interface {
 	GetFilms(ctx context.Context) ([]Film, error)
+	GetFilmByID(ctx context.Context, id int) (Film, error)
 }
 
 type Repository interface {
@@ -52,4 +53,18 @@ func (r *repository) GetFilms(ctx context.Context) ([]Film, error) {
 		films = append(films, c)
 	}
 	return films, nil
+}
+
+func (r *repository) GetFilmByID(ctx context.Context, id int) (Film, error) {
+	var c Film
+	query := `
+	SELECT title, description, release_year, language.name, rating  
+	FROM film
+	INNER JOIN language on film.language_id = language.language_id
+	where film.film_id = $1
+	`
+
+	err := r.conn.QueryRow(ctx, query, id).Scan(&c.Title, &c.Description, &c.ReleaseYear, &c.Language, &c.Rating)
+
+	return c, err
 }
