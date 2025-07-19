@@ -1,5 +1,4 @@
 1. Implement Movie Listing / Search
-Uses film, film_list, film_category, language, actor tables.
 
 2. Inventory Availability for a Film
 Check whether copies of a film are available to rent.

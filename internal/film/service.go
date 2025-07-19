@@ -8,6 +8,7 @@ type Service interface {
 	GetFilms(ctx context.Context) ([]Film, error)
 	GetFilmByID(ctx context.Context, id int) (Film, error)
 	SearchByTitle(ctx context.Context, title string) ([]Film, error)
+	GetFilmWithActorsAndCategoriesByID(ctx context.Context, id int) (FilmWithActorsCategories, error)
 }
 
 type service struct {
@@ -32,4 +33,8 @@ func (s *service) GetFilmByID(ctx context.Context, id int) (Film, error) {
 
 func (s *service) SearchByTitle(ctx context.Context, title string) ([]Film, error) {
 	return s.reader.FindByTitle(ctx, title)
+}
+
+func (s *service) GetFilmWithActorsAndCategoriesByID(ctx context.Context, id int) (FilmWithActorsCategories, error) {
+	return s.reader.FindFilmWithActorsAndCategoriesByID(ctx, id)
 }

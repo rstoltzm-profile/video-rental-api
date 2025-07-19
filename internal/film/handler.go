@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 type Handler struct {
@@ -65,4 +66,30 @@ func (h *Handler) SearchFilm(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(films)
+}
+
+func (h *Handler) GetFilmWithActorsAndCategoriesByID(w http.ResponseWriter, r *http.Request) {
+	// URL example: /films/123/with-actors
+	parts := strings.Split(r.URL.Path, "/")
+	// parts: ["", "films", "123", "with-actors"]
+
+	if len(parts) != 4 || parts[3] != "with-actors-categories" {
+		http.NotFound(w, r)
+		return
+	}
+
+	id, err := strconv.Atoi(parts[2])
+	if err != nil {
+		http.Error(w, "Invalid film ID", http.StatusBadRequest)
+		return
+	}
+
+	filmWithActors, err := h.service.GetFilmWithActorsAndCategoriesByID(r.Context(), id)
+	if err != nil {
+		http.Error(w, "Film not found", http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(filmWithActors)
 }
