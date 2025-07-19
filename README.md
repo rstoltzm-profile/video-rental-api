@@ -64,6 +64,19 @@ http://localhost:8080/v1/
 | ------ | ---- | ----------- |
 | GET | /stores/{id}/inventory/summary | Get Count of inventory by store  |
 
+### Films Routes
+```
+http://localhost:8080/v1/
+```
+
+| Method | Path                               | Description                                   |
+|--------|------------------------------------|-----------------------------------------------|
+| GET    | /stores/{id}/inventory/summary     | Get count of inventory by store               |
+| GET    | /films                             | Get all films                                 |
+| GET    | /films/{id}                        | Get a single film by ID                       |
+| GET    | /films/search?title={query}        | Search for films by title                     |
+| GET    | /films/{id}/with-actors            | Get film details with actors and categories   |
+
 
 ### Next Steps
 ```

@@ -1,17 +1,4 @@
-MVP loop is:
-Film browse/search
-Film availability
-Checkout
-Return
-View customer rentals
-
-✅ HIGH-PRIORITY NEXT STEPS (MVP)
 1. Implement Movie Listing / Search
-API endpoints:
-GET /films – List all films.
-GET /films/{id} – Get details of a specific film.
-GET /films/search?title=xyz – Search by title.
-Uses film, film_list, film_category, language, actor tables.
 
 2. Inventory Availability for a Film
 Check whether copies of a film are available to rent.
