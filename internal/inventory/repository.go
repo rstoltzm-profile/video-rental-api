@@ -9,6 +9,7 @@ import (
 type InventoryReader interface {
 	GetInventory(ctx context.Context) ([]Inventory, error)
 	GetInventoryByStore(ctx context.Context, storeID int) ([]Inventory, error)
+	FindInventoryAvailable(ctx context.Context, storeID int, filmID int) (InventoryAvailability, error)
 }
 
 type Repository interface {
@@ -96,4 +97,42 @@ func (r *repository) GetInventoryByStore(ctx context.Context, storeID int) ([]In
 		rentals = append(rentals, c)
 	}
 	return rentals, nil
+}
+
+func (r *repository) FindInventoryAvailable(ctx context.Context, storeID int, filmID int) (InventoryAvailability, error) {
+	var i InventoryAvailability
+	query := `
+	WITH latest_rentals AS (
+		SELECT DISTINCT ON (inv.inventory_id)
+			inv.inventory_id,
+			inv.store_id,
+			inv.film_id,
+			f.title,
+			r.rental_date,
+			r.return_date
+		FROM
+			inventory inv
+		JOIN film f ON inv.film_id = f.film_id
+		LEFT JOIN rental r ON inv.inventory_id = r.inventory_id
+		WHERE
+			inv.store_id = $1
+			AND inv.film_id = $2
+		ORDER BY
+			inv.inventory_id,
+			r.rental_date DESC
+	)
+	SELECT 
+		inventory_id,
+		store_id,
+		film_id,
+		title,
+		TRUE AS available
+	FROM latest_rentals
+	WHERE return_date IS NOT NULL
+	LIMIT 1;
+	`
+
+	err := r.conn.QueryRow(ctx, query, storeID, filmID).Scan(&i.InventoryID, &i.StoreID, &i.FilmID, &i.Title, &i.Available)
+
+	return i, err
 }

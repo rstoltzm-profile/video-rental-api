@@ -62,6 +62,7 @@ func registerInventoryRoutes(mux *http.ServeMux, conn *pgx.Conn) {
 	svc := inventory.NewService(repo, repo)
 	handler := inventory.NewHandler(svc)
 	mux.HandleFunc("GET /inventory", handler.GetInventory)
+	mux.HandleFunc("GET /inventory/available", handler.GetInventoryAvailable)
 }
 
 func registerStoreRoutes(mux *http.ServeMux, conn *pgx.Conn) {

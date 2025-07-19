@@ -54,6 +54,7 @@ http://localhost:8080/v1/
 | ------ | ---- | ----------- |
 | GET | /inventory | Get all inventory |
 | GET | /inventory?store_id=1 | Get all inventory by store_id |
+| GET | /inventory/available?film_id=1&store_id=2 | Get all available inventory by store_id and film_id |
 
 ### Store Routes
 ```

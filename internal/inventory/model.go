@@ -11,3 +11,11 @@ type Inventory struct {
 	AddressId   int       `json:"address_id"`
 	Phone       string    `json:"phone"`
 }
+
+type InventoryAvailability struct {
+	InventoryID int    `json:"inventory_id"`
+	StoreID     int    `json:"store_id"`
+	FilmID      int    `json:"film_id"`
+	Title       string `json:"title"`
+	Available   bool   `json:"available"`
+}
