@@ -125,13 +125,14 @@ func (r *repository) FindInventoryAvailable(ctx context.Context, storeID int, fi
 		inventory_id,
 		store_id,
 		film_id,
-		title
+		title,
+		TRUE AS available
 	FROM latest_rentals
 	WHERE return_date IS NOT NULL
 	LIMIT 1;
 	`
 
-	err := r.conn.QueryRow(ctx, query, storeID, filmID).Scan(&i.InventoryID, &i.StoreID, &i.FilmID, &i.Title)
+	err := r.conn.QueryRow(ctx, query, storeID, filmID).Scan(&i.InventoryID, &i.StoreID, &i.FilmID, &i.Title, &i.Available)
 
 	return i, err
 }

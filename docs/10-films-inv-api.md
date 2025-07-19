@@ -2,10 +2,14 @@
 
 ✅ Summary:
 - Added Inventory Available Check
+- Added Available false, for no sql returned
 
 ```text
 curl -s "$BASE_URL/v1/inventory/available?film_id=1&store_id=2"
-{"inventory_id":7,"store_id":2,"film_id":1,"title":"ACADEMY DINOSAUR"}
+{"inventory_id":7,"store_id":2,"film_id":1,"title":"ACADEMY DINOSAUR","available":true}
+
+curl -s "$BASE_URL/v1/inventory/available?film_id=999999&store_id=2"
+{"available":false,"film_id":999999,"store_id":2}
 
 ```
 
@@ -65,7 +69,7 @@ WHERE return_date IS NOT NULL
 LIMIT 1;
 ```
 
-## Refactored a bit, since I didn't want to return the rental info here
+## Refactored a bit, since I didn't want to return the rental info here, and want TRUE AS available
 ```
 	WITH latest_rentals AS (
 		SELECT DISTINCT ON (inv.inventory_id)
@@ -90,7 +94,8 @@ LIMIT 1;
 		inventory_id,
 		store_id,
 		film_id,
-		title
+		title,
+		TRUE AS available
 	FROM latest_rentals
 	WHERE return_date IS NOT NULL
 	LIMIT 1;

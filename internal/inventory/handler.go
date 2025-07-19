@@ -74,7 +74,6 @@ func (h *Handler) GetInventoryAvailable(w http.ResponseWriter, r *http.Request) 
 	}
 
 	if err != nil {
-		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
 		if errors.Is(err, sql.ErrNoRows) {
 			w.WriteHeader(http.StatusNotFound)
 			json.NewEncoder(w).Encode(map[string]any{

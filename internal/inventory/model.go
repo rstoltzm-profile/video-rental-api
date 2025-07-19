@@ -17,4 +17,5 @@ type InventoryAvailability struct {
 	StoreID     int    `json:"store_id"`
 	FilmID      int    `json:"film_id"`
 	Title       string `json:"title"`
+	Available   bool   `json:"available"`
 }
