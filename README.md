@@ -77,11 +77,3 @@ http://localhost:8080/v1/
 | GET    | /films/search?title={query}        | Search for films by title                     |
 | GET    | /films/{id}/with-actors-categories | Get film details with actors and categories   |
 
-
-### Next Steps
-```
-1. Add get rentals for name GET /rentals?first_name=John&last_name=Doe
-2. Add staff router
-3. Checkout a movie! Need to check if in inventory at the desired store
-4. Pay balance
-```
