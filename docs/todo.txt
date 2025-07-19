@@ -1,12 +1,3 @@
-1. Implement Movie Listing / Search
-
-2. Inventory Availability for a Film
-Check whether copies of a film are available to rent.
-API idea:
-GET /films/{id}/availability or
-GET /inventory/available?film_id=1&store_id=2
-Joins inventory, rental, and store. Useful for showing “in stock” in a given store.
-
 3. Create Rental Transaction (Checkout)
 Allow a customer to rent a movie.
 API:
