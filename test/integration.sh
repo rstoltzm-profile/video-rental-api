@@ -125,6 +125,17 @@ else
     exit 1
 fi
 
+# Test 3: GET /v1/inventory/available?film_id=1&store_id=2 (expects non-empty list)
+echo -n "✅ /v1/inventory/available?film_id=1&store_id=2 ... "
+RESPONSE=$(curl -s "$BASE_URL/v1/inventory/available?film_id=1&store_id=2")
+if echo "$RESPONSE" | jq -e 'length > 0' > /dev/null; then
+    echo "OK"
+else
+    echo "FAIL - Expected non-empty inventory list"
+    exit 1
+fi
+
+##########################################################
 echo "## Store Tests"
 # Test 1: GET /v1/stores/1/inventory/summary (expects non-empty list)
 echo -n "✅ /v1/stores/1/inventory/summary ... "

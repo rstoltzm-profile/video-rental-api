@@ -7,6 +7,7 @@ import (
 type Service interface {
 	GetInventory(ctx context.Context) ([]Inventory, error)
 	GetInventoryByStore(ctx context.Context, storeID int) ([]Inventory, error)
+	GetInventoryAvailable(ctx context.Context, storeID int, filmID int) (InventoryAvailability, error)
 }
 
 type service struct {
@@ -27,4 +28,8 @@ func (s *service) GetInventory(ctx context.Context) ([]Inventory, error) {
 
 func (s *service) GetInventoryByStore(ctx context.Context, storeID int) ([]Inventory, error) {
 	return s.reader.GetInventoryByStore(ctx, storeID)
+}
+
+func (s *service) GetInventoryAvailable(ctx context.Context, storeID int, filmID int) (InventoryAvailability, error) {
+	return s.reader.FindInventoryAvailable(ctx, storeID, filmID)
 }
