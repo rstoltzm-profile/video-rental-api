@@ -3,6 +3,7 @@ package film
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -16,7 +17,7 @@ func NewHandler(service Service) *Handler {
 }
 
 func (h *Handler) GetFilms(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "appication/json")
+	w.Header().Set("Content-Type", "application/json")
 
 	films, err := h.service.GetFilms(r.Context())
 
@@ -29,7 +30,7 @@ func (h *Handler) GetFilms(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) GetFilmByID(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "appication/json")
+	w.Header().Set("Content-Type", "application/json")
 	idStr := r.PathValue("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -43,4 +44,25 @@ func (h *Handler) GetFilmByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(film)
+}
+
+func (h *Handler) SearchFilm(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	title := r.URL.Query().Get("title")
+
+	if title == "" {
+		log.Println("no title")
+		http.Error(w, "Missing 'title' query parameter", http.StatusBadRequest)
+		return
+	}
+
+	films, err := h.service.SearchByTitle(r.Context(), title)
+
+	if err != nil {
+		log.Println("Scan error:", err)
+		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(films)
 }

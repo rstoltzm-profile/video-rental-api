@@ -157,3 +157,13 @@ else
     echo "FAIL - Expected non-empty films list"
     exit 1
 fi
+
+# Test 3: GET /v1/films/search?title=ACADEMY DINOSAUR (expects non-empty list)
+echo -n "✅ /v1/films/search?title=ACADEMY DINOSAUR ... "
+RESPONSE=$(curl -s "$BASE_URL/v1/films/search?title=ACADEMY%20DINOSAUR")
+if echo "$RESPONSE" | jq -e 'length > 0' > /dev/null; then
+    echo "OK"
+else
+    echo "FAIL - Expected non-empty films list"
+    exit 1
+fi

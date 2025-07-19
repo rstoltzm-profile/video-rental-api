@@ -1,6 +1,4 @@
 1. Implement Movie Listing / Search
-GET /films/{id} – Get details of a specific film.
-GET /films/search?title=xyz – Search by title.
 Uses film, film_list, film_category, language, actor tables.
 
 2. Inventory Availability for a Film

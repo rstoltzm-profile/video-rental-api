@@ -6,4 +6,5 @@ type Film struct {
 	ReleaseYear int    `json:"release_year"`
 	Language    string `json:"language"`
 	Rating      string `json:"rating"`
+	Category    string `json:"category"`
 }

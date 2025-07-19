@@ -77,4 +77,5 @@ func registerFilmRoutes(mux *http.ServeMux, conn *pgx.Conn) {
 	handler := film.NewHandler(svc)
 	mux.HandleFunc("GET /films", handler.GetFilms)
 	mux.HandleFunc("GET /films/{id}", handler.GetFilmByID)
+	mux.HandleFunc("GET /films/search", handler.SearchFilm)
 }

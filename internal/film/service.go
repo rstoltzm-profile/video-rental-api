@@ -7,6 +7,7 @@ import (
 type Service interface {
 	GetFilms(ctx context.Context) ([]Film, error)
 	GetFilmByID(ctx context.Context, id int) (Film, error)
+	SearchByTitle(ctx context.Context, title string) ([]Film, error)
 }
 
 type service struct {
@@ -27,4 +28,8 @@ func (s *service) GetFilms(ctx context.Context) ([]Film, error) {
 
 func (s *service) GetFilmByID(ctx context.Context, id int) (Film, error) {
 	return s.reader.GetFilmByID(ctx, id)
+}
+
+func (s *service) SearchByTitle(ctx context.Context, title string) ([]Film, error) {
+	return s.reader.FindByTitle(ctx, title)
 }
