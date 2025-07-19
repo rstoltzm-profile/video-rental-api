@@ -168,8 +168,8 @@ else
     exit 1
 fi
 
-# Test 4: GET /v1/films/1/with-actors(expects non-empty list)
-echo -n "✅ /v1/films/1/with-actors ... "
+# Test 4: GET /v1/films/1/with-actors-categories (expects non-empty list)
+echo -n "✅ /v1/films/1/with-actors-categories ... "
 RESPONSE=$(curl -s $BASE_URL/v1/films/1/with-actors-categories)
 if echo "$RESPONSE" | jq -e 'length > 0' > /dev/null; then
     echo "OK"

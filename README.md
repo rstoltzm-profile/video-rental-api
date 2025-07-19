@@ -75,7 +75,7 @@ http://localhost:8080/v1/
 | GET    | /films                             | Get all films                                 |
 | GET    | /films/{id}                        | Get a single film by ID                       |
 | GET    | /films/search?title={query}        | Search for films by title                     |
-| GET    | /films/{id}/with-actors            | Get film details with actors and categories   |
+| GET    | /films/{id}/with-actors-categories | Get film details with actors and categories   |
 
 
 ### Next Steps
