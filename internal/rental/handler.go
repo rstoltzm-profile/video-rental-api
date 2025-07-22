@@ -51,3 +51,23 @@ func (h *Handler) GetRentals(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(rentals)
 }
+
+func (h *Handler) CreateRental(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	var req CreateRentalRequest
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+	rental, err := h.service.CreateRental(r.Context(), req)
+	if err != nil {
+		http.Error(w, "Failed to create rental", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Location", fmt.Sprintf("/v1/rentals/%d", rental))
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(map[string]int{"id": rental})
+}

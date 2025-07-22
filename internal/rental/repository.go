@@ -13,9 +13,14 @@ type RentalReader interface {
 	GetLateRentalsByCustomerID(ctx context.Context, customerID int) ([]Rental, error)
 }
 
+type RentalWriter interface {
+	InsertRental(ctx context.Context, req CreateRentalRequest) (int, error)
+}
+
 type Repository interface {
 	RentalReader
 	TransactionManager
+	RentalWriter
 }
 
 type TransactionManager interface {
@@ -180,4 +185,24 @@ func (r *repository) GetLateRentalsByCustomerID(ctx context.Context, customerID 
 		rentals = append(rentals, c)
 	}
 	return rentals, nil
+}
+
+func (r *repository) InsertRental(ctx context.Context, req CreateRentalRequest) (int, error) {
+	var rental_id int
+	query := `
+		INSERT INTO rental (rental_date, inventory_id, customer_id, staff_id, last_update)
+		VALUES (
+		TO_TIMESTAMP(TO_CHAR(CURRENT_TIMESTAMP, 'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS'),
+		$1, $2, $3,
+		TO_TIMESTAMP(TO_CHAR(CURRENT_TIMESTAMP, 'YYYY-MM-DD HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS')
+		)
+		RETURNING rental_id
+	`
+	err := r.conn.QueryRow(ctx, query, req.InventoryID, req.CustomerID, req.StaffID).Scan(&rental_id)
+
+	if err != nil {
+		return -1, err
+	}
+
+	return rental_id, nil
 }
