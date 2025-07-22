@@ -10,6 +10,7 @@ type Service interface {
 	GetRentalsByCustomerID(ctx context.Context, customerID int) ([]Rental, error)
 	GetLateRentalsByCustomerID(ctx context.Context, customerID int) ([]Rental, error)
 	CreateRental(ctx context.Context, req CreateRentalRequest) (int, error)
+	ReturnRentalByID(ctx context.Context, id int) error
 }
 
 type service struct {
@@ -27,7 +28,7 @@ func NewService(reader RentalReader, writer RentalWriter, tx TransactionManager)
 }
 
 func (s *service) GetRentals(ctx context.Context) ([]Rental, error) {
-	return s.reader.GetLateRentals(ctx)
+	return s.reader.GetRentals(ctx)
 }
 
 func (s *service) GetRentalsByCustomerID(ctx context.Context, customerID int) ([]Rental, error) {
@@ -44,4 +45,8 @@ func (s *service) GetLateRentalsByCustomerID(ctx context.Context, customerID int
 
 func (s *service) CreateRental(ctx context.Context, req CreateRentalRequest) (int, error) {
 	return s.writer.InsertRental(ctx, req)
+}
+
+func (s *service) ReturnRentalByID(ctx context.Context, id int) error {
+	return s.writer.UpdateRentalByID(ctx, id)
 }

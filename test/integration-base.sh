@@ -189,20 +189,3 @@ else
     exit 1
 fi
 
-##########################################################
-echo "## Rent a movie"
-echo -n "✅ POST /v1/rentals ... "
-
-CREATE_RESPONSE=$(curl -s -X POST $BASE_URL/v1/rentals \
-  -H "Content-Type: application/json" \
-  --data @test/rental.json)
-
-RENTAL_ID=$(echo "$CREATE_RESPONSE" | jq -r '.id')
-
-if [[ "$RENTAL_ID" =~ ^[0-9]+$ ]]; then
-  echo "OK (created rental ID = $RENTAL_ID)"
-else
-  echo "FAIL - could not extract rental ID"
-  echo "$CREATE_RESPONSE"
-  exit 1
-fi

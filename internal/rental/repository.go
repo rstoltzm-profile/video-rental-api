@@ -2,6 +2,7 @@ package rental
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/jackc/pgx/v5"
 )
@@ -15,6 +16,7 @@ type RentalReader interface {
 
 type RentalWriter interface {
 	InsertRental(ctx context.Context, req CreateRentalRequest) (int, error)
+	UpdateRentalByID(ctx context.Context, id int) error
 }
 
 type Repository interface {
@@ -205,4 +207,20 @@ func (r *repository) InsertRental(ctx context.Context, req CreateRentalRequest) 
 	}
 
 	return rental_id, nil
+}
+
+func (r *repository) UpdateRentalByID(ctx context.Context, id int) error {
+	query := `
+	UPDATE rental
+	SET return_date = CURRENT_TIMESTAMP
+	WHERE rental_id = $1
+	`
+	cmdTag, err := r.conn.Exec(ctx, query, id)
+	if err != nil {
+		return fmt.Errorf("update rental failed: %w", err)
+	}
+	if cmdTag.RowsAffected() == 0 {
+		return fmt.Errorf("no rental found with ID %d", id)
+	}
+	return nil
 }
