@@ -21,3 +21,9 @@ POST /rentals/{id}/return
 ```
 SELECT setval('rental_rental_id_seq', (SELECT MAX(rental_id) FROM rental));
 ```
+
+## Added Rental and Return Rental Feature
+```
+	mux.HandleFunc("POST /rentals", handler.CreateRental)
+	mux.HandleFunc("POST /rentals/{id}/return", handler.ReturnRental)
+```
