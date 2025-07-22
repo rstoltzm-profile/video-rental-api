@@ -9,6 +9,12 @@ API:
 POST /rentals
 Payload: {customer_id, inventory_id, staff_id}
 You’ll insert into rental and maybe payment tables here.
+
+4. Return Movie
+Mark a rental as returned.
+API:
+POST /rentals/{id}/return
+(Updates rental.return_date)
 ```
 
 ## rental table didn't auto increment
