@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/rstoltzm-profile/video-rental-api/internal/api"
 	"github.com/rstoltzm-profile/video-rental-api/internal/config"
@@ -27,7 +28,16 @@ func Run() error {
 	// keep connection alive until Run() returns (server shutdown)
 	defer conn.Close(context.Background())
 
+	// configure server
+	server := &http.Server{
+		Addr:         ":" + cfg.Port,
+		Handler:      api.NewRouter(conn, cfg.APIKey),
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
+		IdleTimeout:  60 * time.Second,
+	}
+
 	// start the server, pass in conn to NewRouter so api can use it.
 	log.Printf("Starting server on port %s...", cfg.Port)
-	return http.ListenAndServe(":"+cfg.Port, api.NewRouter(conn))
+	return server.ListenAndServe()
 }

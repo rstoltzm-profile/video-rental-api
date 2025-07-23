@@ -18,6 +18,8 @@ build-linux:
 
 ## Run the application locally
 run:
+	export PORT=8080
+	export API_KEY="secure-dev-key-123"
 	go run $(MAIN)
 
 ## Run unit tests
@@ -25,9 +27,26 @@ test:
 	go test ./internal/... -v
 
 ## Run integration tests
-integration-test:
-	bash test/integration-base.sh
-	bash test/integration-rental.sh
+integration-test:	
+	@echo "\n# Running Customer Tests"
+	python3 test/customer.py
+	@echo "# Finished Customer Tests...\n"
+
+	@echo "\n# Running Rental Tests..."
+	python3 test/rental.py
+	@echo "# Finished Rental Tests...\n"
+
+	@echo "\n# Running Inventory Tests..."
+	python3 test/inventory.py
+	@echo "# Finished Inventory Tests...\n"
+
+	@echo "\n# Running Store Tests..."
+	python3 test/store.py
+	@echo "# Finished Store Tests...\n"
+
+	@echo "\n# Running Film Tests..."
+	python3 test/film.py
+	@echo "# Finished Film Tests...\n"
 
 ## Clean generated binaries
 clean:

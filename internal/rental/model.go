@@ -11,7 +11,7 @@ type Rental struct {
 }
 
 type CreateRentalRequest struct {
-	InventoryID int `json:"inventory_id"`
-	CustomerID  int `json:"customer_id"`
-	StaffID     int `json:"staff_id"`
+	InventoryID int `json:"inventory_id" validate:"min=0"`
+	CustomerID  int `json:"customer_id" validate:"min=0"`
+	StaffID     int `json:"staff_id" validate:"min=0"`
 }
