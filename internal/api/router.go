@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/jackc/pgx/v5"
@@ -26,7 +27,8 @@ func NewRouter(conn *pgx.Conn) http.Handler {
 	registerStoreRoutes(v1, conn)
 	registerFilmRoutes(v1, conn)
 
-	mux.Handle("/v1/", http.StripPrefix("/v1", v1))
+	// mux.Handle("/v1/", http.StripPrefix("/v1", v1))
+	mux.Handle("/v1/", http.StripPrefix("/v1", errorMiddleware(v1.ServeHTTP)))
 	return mux
 }
 
@@ -82,4 +84,20 @@ func registerFilmRoutes(mux *http.ServeMux, conn *pgx.Conn) {
 	mux.HandleFunc("GET /films/{id}", handler.GetFilmByID)
 	mux.HandleFunc("GET /films/search", handler.SearchFilm)
 	mux.HandleFunc("GET /films/", handler.GetFilmWithActorsAndCategoriesByID)
+}
+
+func errorMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("Request: %s %s", r.Method, r.URL.Path)
+
+		defer func() {
+			if err := recover(); err != nil {
+				// Log the panic
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+			}
+		}()
+
+		next.ServeHTTP(w, r)
+		log.Printf("Response completed for: %s %s", r.Method, r.URL.Path)
+	}
 }

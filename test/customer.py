@@ -65,6 +65,49 @@ class APITestCase(unittest.TestCase):
         url = f"{self.BASE_URL}/v1/customers/{customer_id}"
         response = requests.delete(url, headers=self.HEADERS)
         return response.status_code
+    
+    def test_create_customer_validation_failure(self):
+        """Test create customer with invalid data returns validation error"""
+        url = f"{self.BASE_URL}/v1/customers"
+        
+        # Test with missing required fields
+        invalid_body = {"invalid": "json"}
+        
+        response = requests.post(url, json=invalid_body, headers=self.HEADERS)
+        
+        # Should return 400 Bad Request for validation failure
+        self.assertEqual(response.status_code, 400, f"Expected 400 for validation failure, got {response.status_code}")
+        
+        # Check that response contains validation error message
+        response_text = response.text
+        self.assertIn("validation", response_text.lower(), "Response should contain validation error")
+        self.assertIn("required", response_text.lower(), "Response should mention required fields")
+        
+        print(f"\n✅ Validation failure test passed: {response.status_code}")
+        print(f"   Error message: {response_text[:100]}...")
+
+    def test_create_customer_partial_validation_failure(self):
+        """Test create customer with partially valid data"""
+        url = f"{self.BASE_URL}/v1/customers"
+        
+        # Test with some fields but missing others
+        partial_body = {
+            "first_name": "John",
+            "last_name": "Doe"
+            # Missing email, store_id, address
+        }
+        
+        response = requests.post(url, json=partial_body, headers=self.HEADERS)
+        
+        self.assertEqual(response.status_code, 400, f"Expected 400 for validation failure, got {response.status_code}")
+        
+        response_text = response.text
+        self.assertIn("email", response_text.lower(), "Should complain about missing email")
+        self.assertIn("storeid", response_text.lower(), "Should complain about missing storeid")
+        self.assertIn("address", response_text.lower(), "Should complain about missing address")
+        
+        print(f"\n✅ Partial validation failure test passed: {response.status_code}")
+        print(f"   Missing fields detected in: {response_text[:100]}...")
 
     def read_json(self, file_name):
         """Helper to read and parse JSON file"""
