@@ -4,7 +4,8 @@ import requests
 class StoreTests(unittest.TestCase):
     BASE_URL = "http://localhost:8080"
     HEADERS = {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "X-API-Key": "secure-dev-key-123"
     }
 
     def test_get_store_inventory_summary(self):

@@ -29,5 +29,5 @@ func Run() error {
 
 	// start the server, pass in conn to NewRouter so api can use it.
 	log.Printf("Starting server on port %s...", cfg.Port)
-	return http.ListenAndServe(":"+cfg.Port, api.NewRouter(conn))
+	return http.ListenAndServe(":"+cfg.Port, api.NewRouter(conn, cfg.APIKey))
 }

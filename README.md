@@ -13,6 +13,7 @@
 ```
 export DATABASE_URL="postgres://postgres:123456@localhost:5432/postgres"
 export PORT=8080
+export API_KEY="secure-dev-key-123"
 ```
 
 ### Optional port change if needed on the pg db 6543:5432

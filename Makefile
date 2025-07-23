@@ -18,6 +18,8 @@ build-linux:
 
 ## Run the application locally
 run:
+	export PORT=8080
+	export API_KEY="secure-dev-key-123"
 	go run $(MAIN)
 
 ## Run unit tests

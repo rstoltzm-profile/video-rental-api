@@ -30,7 +30,7 @@ func TestHealthHandler(t *testing.T) {
 }
 
 func TestRouter_HealthRoute(t *testing.T) {
-	router := NewRouter(nil) // nil is fine as long as handler doesn't panic
+	router := NewRouter(nil, "nil") // nil is fine as long as handler doesn't panic
 
 	req := httptest.NewRequest(http.MethodGet, "/health", nil)
 	rr := httptest.NewRecorder()
