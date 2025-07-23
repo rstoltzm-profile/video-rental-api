@@ -49,8 +49,17 @@ http://localhost:8080/v1/
 | GET | /rentals?late=true | Get all late rentals |
 | GET | /rentals?customer_id={id} | Get rentals for customer |
 | GET | /rentals?customer_id={id}&late=true | Get late rentals for customer |
-| POST | /rentals | Rents inventory with payload {"inventory_id": 709,"customer_id": 397,"staff_id": 1} |
-| POST | /rentals/{id}/return| Returns a rental for {id} |
+| POST | /rentals | Rents inventory with payload --date rental.json |
+| POST | /rentals/{id}/return | Returns a rental for {id} |
+
+#### Rental payload
+```json
+{
+  "inventory_id": 709,
+  "customer_id": 397,
+  "staff_id": 1
+}
+```
 
 ### Inventory Routes
 ```
