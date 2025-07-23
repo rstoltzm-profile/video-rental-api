@@ -52,3 +52,61 @@ Ran 3 tests in 0.028s
 OK
 # Finished Rental Tests...
 ```
+
+## Converted rest of tests
+```
+# Running Inventory Tests...
+python3 test/inventory.py
+
+📦 Testing: GET /v1/inventory
+✅ Inventory list retrieved successfully
+.
+🎞️ Testing: GET /v1/inventory/available?film_id=1&store_id=2
+✅ Available inventory retrieved successfully
+.
+🏬 Testing: GET /v1/inventory?store_id=1
+✅ Store inventory retrieved successfully
+.
+----------------------------------------------------------------------
+Ran 3 tests in 0.068s
+
+OK
+# Finished Inventory Tests...
+
+
+# Running Store Tests...
+python3 test/store.py
+
+🏪 Testing: GET /v1/stores/1/inventory/summary
+✅ Store inventory summary retrieved successfully
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.007s
+
+OK
+# Finished Store Tests...
+
+
+# Running Film Tests...
+python3 test/film.py
+
+===== STARTING Film Tests =====
+
+🎬 Testing: GET /v1/films
+✅ Films list retrieved successfully
+.
+🎞️ Testing: GET /v1/films/1
+✅ Film details retrieved successfully
+.
+🎭 Testing: GET /v1/films/1/with-actors-categories
+✅ Enriched film data retrieved successfully
+.
+🔍 Testing: GET /v1/films/search?title=ACADEMY DINOSAUR
+✅ Film search results retrieved successfully
+.
+----------------------------------------------------------------------
+Ran 4 tests in 0.030s
+
+OK
+# Finished Film Tests...
+```

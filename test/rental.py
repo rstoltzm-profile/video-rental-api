@@ -63,6 +63,52 @@ class APITestCase(unittest.TestCase):
         self.assertEqual(return_response.status_code, 204, f"Return failed: {return_response.status_code}")
         print(f"✅ Movie returned successfully (status {return_response.status_code})")
 
+
+    def test_get_all_rentals(self):
+        """Test GET /v1/rentals returns non-empty list"""
+        print("\n🔍 Testing: GET /v1/rentals")
+        url = f"{self.BASE_URL}/v1/rentals"
+        response = requests.get(url, headers=self.HEADERS)
+        self.assertEqual(response.status_code, 200)
+        rentals = response.json()
+        self.assertIsInstance(rentals, list)
+        self.assertGreater(len(rentals), 0, "Expected non-empty rentals list")
+        print("✅ Rentals list retrieved successfully")
+
+    def test_get_late_rentals(self):
+        """Test GET /v1/rentals?late=true returns non-empty list"""
+        print("\n🔍 Testing: GET /v1/rentals?late=true")
+        url = f"{self.BASE_URL}/v1/rentals?late=true"
+        response = requests.get(url, headers=self.HEADERS)
+        self.assertEqual(response.status_code, 200)
+        rentals = response.json()
+        self.assertIsInstance(rentals, list)
+        self.assertGreater(len(rentals), 0, "Expected non-empty late rentals list")
+        print("✅ Late rentals list retrieved successfully")
+
+    def test_get_rentals_by_customer(self):
+        """Test GET /v1/rentals?customer_id=373 returns non-empty list"""
+        print("\n🔍 Testing: GET /v1/rentals?customer_id=373")
+        url = f"{self.BASE_URL}/v1/rentals?customer_id=373"
+        response = requests.get(url, headers=self.HEADERS)
+        self.assertEqual(response.status_code, 200)
+        rentals = response.json()
+        self.assertIsInstance(rentals, list)
+        self.assertGreater(len(rentals), 0, "Expected non-empty rentals for customer")
+        print("✅ Customer rentals retrieved successfully")
+
+    def test_get_late_rentals_by_customer(self):
+        """Test GET /v1/rentals?customer_id=373&late=true returns non-empty list"""
+        print("\n🔍 Testing: GET /v1/rentals?customer_id=373&late=true")
+        url = f"{self.BASE_URL}/v1/rentals?customer_id=373&late=true"
+        response = requests.get(url, headers=self.HEADERS)
+        self.assertEqual(response.status_code, 200)
+        rentals = response.json()
+        self.assertIsInstance(rentals, list)
+        self.assertGreater(len(rentals), 0, "Expected non-empty late rentals for customer")
+        print("✅ Late customer rentals retrieved successfully")
+
+
     def read_json(self, file_name):
         """Helper to read and parse JSON file"""
         try:
