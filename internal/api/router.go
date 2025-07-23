@@ -28,7 +28,10 @@ func NewRouter(conn *pgx.Conn, apiKey string) http.Handler {
 	registerFilmRoutes(v1, conn)
 
 	// mux.Handle("/v1/", http.StripPrefix("/v1", v1))
-	mux.Handle("/v1/", http.StripPrefix("/v1", apiKeyMiddleware(apiKey, errorMiddleware(v1.ServeHTTP))))
+	mux.Handle("/v1/", http.StripPrefix("/v1",
+		requestSizeMiddleware(
+			apiKeyMiddleware(apiKey,
+				errorMiddleware(v1.ServeHTTP)))))
 	return mux
 }
 
@@ -117,6 +120,16 @@ func apiKeyMiddleware(validAPIKey string, next http.HandlerFunc) http.HandlerFun
 		}
 
 		// API key is valid, continue
+		next.ServeHTTP(w, r)
+	}
+}
+
+func requestSizeMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	const maxRequestSize = 1 << 20 // 1MB limit
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		r.Body = http.MaxBytesReader(w, r.Body, maxRequestSize)
+
 		next.ServeHTTP(w, r)
 	}
 }
