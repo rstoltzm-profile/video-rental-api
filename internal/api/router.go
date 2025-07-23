@@ -27,7 +27,6 @@ func NewRouter(conn *pgx.Conn, apiKey string) http.Handler {
 	registerStoreRoutes(v1, conn)
 	registerFilmRoutes(v1, conn)
 
-	// mux.Handle("/v1/", http.StripPrefix("/v1", v1))
 	mux.Handle("/v1/", http.StripPrefix("/v1",
 		requestSizeMiddleware(
 			apiKeyMiddleware(apiKey,

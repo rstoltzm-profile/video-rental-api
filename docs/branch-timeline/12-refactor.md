@@ -6,6 +6,14 @@ curl -s -X POST $BASE_URL/v1/customers   -H "Content-Type: application/json"   -
 Validation error: Key: 'CreateCustomerRequest.FirstName' Error:Field validation for 'FirstName' failed on the 'required' tag
 ```
 
+## Added some MW
+```
+	mux.Handle("/v1/", http.StripPrefix("/v1",
+		requestSizeMiddleware(
+			apiKeyMiddleware(apiKey,
+				errorMiddleware(v1.ServeHTTP)))))
+```
+
 ## Update phone number to e164 format
 
 ## Updated testing to use python for easier api testing
