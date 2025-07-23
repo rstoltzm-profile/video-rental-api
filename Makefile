@@ -27,7 +27,8 @@ test:
 ## Run integration tests
 integration-test:
 	bash test/integration-base.sh
-	bash test/integration-rental.sh
+	python3 test/rental.py 
+	python3 test/customer.py 
 
 ## Clean generated binaries
 clean:

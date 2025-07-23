@@ -1,6 +1,6 @@
 {
   "store_id": 1,
-  "first_name": "John",
+  "first_name": "Good",
   "last_name": "Doe",
   "email": "john@example.com",
   "address": {
@@ -9,6 +9,6 @@
     "district": "Sind",
     "city_name": "Shikarpur",
     "postal_code": "90210",
-    "phone": "555-1234"
+    "phone": "+15551234"
   }
 }

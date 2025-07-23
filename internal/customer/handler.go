@@ -5,7 +5,11 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+
+	"github.com/go-playground/validator/v10"
 )
+
+var validate = validator.New()
 
 type Handler struct {
 	service Service
@@ -47,8 +51,16 @@ func (h *Handler) GetCustomerByID(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) CreateCustomer(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var req CreateCustomerRequest
+
+	// Json Decoder
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+	// Validate the request
+	if err := validate.Struct(req); err != nil {
+		http.Error(w, fmt.Sprintf("Validation error: %v", err), http.StatusBadRequest)
 		return
 	}
 
