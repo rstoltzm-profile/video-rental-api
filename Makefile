@@ -27,8 +27,14 @@ test:
 ## Run integration tests
 integration-test:
 	bash test/integration-base.sh
-	python3 test/rental.py 
-	python3 test/customer.py 
+	
+	@echo "\n# Running Customer Tests"
+	python3 test/customer.py
+	@echo "# Finished Customer Tests...\n"
+
+	@echo "\n# Running Rental Tests..."
+	python3 test/rental.py
+	@echo "# Finished Rental Tests...\n"
 
 ## Clean generated binaries
 clean:
