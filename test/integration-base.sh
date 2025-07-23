@@ -188,4 +188,3 @@ else
     echo "FAIL - Expected non-empty films list"
     exit 1
 fi
-

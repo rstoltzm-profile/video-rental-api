@@ -12,6 +12,7 @@ type RentalReader interface {
 	GetLateRentals(ctx context.Context) ([]Rental, error)
 	GetRentalsByCustomerID(ctx context.Context, customerID int) ([]Rental, error)
 	GetLateRentalsByCustomerID(ctx context.Context, customerID int) ([]Rental, error)
+	GetActiveRentalByInventoryID(ctx context.Context, inventoryID int) (*Rental, error)
 }
 
 type RentalWriter interface {
@@ -223,4 +224,36 @@ func (r *repository) UpdateRentalByID(ctx context.Context, id int) error {
 		return fmt.Errorf("no rental found with ID %d", id)
 	}
 	return nil
+}
+
+func (r *repository) GetActiveRentalByInventoryID(ctx context.Context, inventoryID int) (*Rental, error) {
+	var rental Rental
+	query := `
+	SELECT
+		customer.first_name,
+		customer.last_name, 
+		address.phone,
+		rental.rental_date,
+		film.title
+	FROM
+		rental
+		INNER JOIN customer ON rental.customer_id = customer.customer_id
+		INNER JOIN address ON customer.address_id = address.address_id
+		INNER JOIN inventory ON rental.inventory_id = inventory.inventory_id
+		INNER JOIN film ON inventory.film_id = film.film_id
+	WHERE
+		inventory.inventory_id = $1
+		and rental.return_date IS NULL
+	ORDER BY
+		rental.rental_date
+	`
+	err := r.conn.QueryRow(ctx, query, inventoryID).Scan(&rental.FirstName, &rental.LastName, &rental.Phone, &rental.RentalDate, &rental.Title)
+	if err == pgx.ErrNoRows {
+		return nil, nil // No Active rental
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return &rental, err
 }

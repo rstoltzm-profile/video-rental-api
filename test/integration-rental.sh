@@ -2,14 +2,14 @@
 
 set -euo pipefail
 
-BASE_URL="http://localhost:8080"
+BASE_URL_2="http://localhost:8080"
 
 ##########################################################
 echo "## Rent a movie"
 # Test 1: Rent movie
 echo -n "✅ POST /v1/rentals ... "
 
-CREATE_RESPONSE=$(curl -s -X POST $BASE_URL/v1/rentals \
+CREATE_RESPONSE=$(curl -s -X POST $BASE_URL_2/v1/rentals \
   -H "Content-Type: application/json" \
   --data @test/rental.json)
 
@@ -26,7 +26,7 @@ fi
 # Test 2: Return movie
 echo -n "✅ POST /v1/rentals/$RENTAL_ID/return ... "
 
-RETURN_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST $BASE_URL/v1/rentals/$RENTAL_ID/return)
+RETURN_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST $BASE_URL_2/v1/rentals/$RENTAL_ID/return)
 
 if [ "$RETURN_STATUS" -eq 204 ]; then
   echo "OK"
@@ -39,7 +39,7 @@ fi
 # Test 3: Rent a movie that's already rented
 echo -n "✅ POST /v1/rentals (first attempt) ... "
 
-CREATE_RESPONSE_1=$(curl -s -X POST $BASE_URL/v1/rentals \
+CREATE_RESPONSE_1=$(curl -s -X POST $BASE_URL_2/v1/rentals \
   -H "Content-Type: application/json" \
   --data @test/rental.json)
 
@@ -55,7 +55,7 @@ fi
 
 echo -n "✅ POST /v1/rentals (second attempt, should fail) ... "
 
-CREATE_RESPONSE_2=$(curl -s -w "\n%{http_code}" -X POST $BASE_URL/v1/rentals \
+CREATE_RESPONSE_2=$(curl -s -w "\n%{http_code}" -X POST $BASE_URL_2/v1/rentals \
   -H "Content-Type: application/json" \
   --data @test/rental.json)
 
@@ -69,4 +69,4 @@ else
   echo "Response: $RESPONSE_BODY"
 fi
 
-RETURN_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST $BASE_URL/v1/rentals/$RENTAL_ID_1/return)
+RETURN_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST $BASE_URL_2/v1/rentals/$RENTAL_ID_1/return)
