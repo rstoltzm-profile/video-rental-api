@@ -15,7 +15,7 @@ export DATABASE_URL="postgres://postgres:123456@localhost:5432/postgres"
 export PORT=8080
 ```
 
-## Optional port change if needed on the pg db 6543:5432
+### Optional port change if needed on the pg db 6543:5432
 ```
 export DATABASE_URL="postgres://postgres:123456@localhost:6543"
 ```
