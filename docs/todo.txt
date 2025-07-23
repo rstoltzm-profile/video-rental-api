@@ -19,6 +19,10 @@ POST /login – returns token
 
 Middleware to secure rental endpoints (e.g. checkout)
 
+8. validation
+in "POST /rentals/{id}/return" only return the rental if it's checked out (null check)
+
+
 ✅ OPTIONAL NICE-TO-HAVE (Post-MVP)
 🔹 Add new film/inventory (Admin/staff)
 POST /films
