@@ -9,3 +9,9 @@ type Rental struct {
 	RentalDate time.Time `json:"rental_date"`
 	Title      string    `json:"title"`
 }
+
+type CreateRentalRequest struct {
+	InventoryID int `json:"inventory_id"`
+	CustomerID  int `json:"customer_id"`
+	StaffID     int `json:"staff_id"`
+}

@@ -26,7 +26,8 @@ test:
 
 ## Run integration tests
 integration-test:
-	bash test/integration.sh
+	bash test/integration-base.sh
+	bash test/integration-rental.sh
 
 ## Clean generated binaries
 clean:

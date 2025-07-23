@@ -52,9 +52,11 @@ func registerCustomerRoutes(mux *http.ServeMux, conn *pgx.Conn) {
 
 func registerRentalRoutes(mux *http.ServeMux, conn *pgx.Conn) {
 	repo := rental.NewRepository(conn)
-	svc := rental.NewService(repo, repo)
+	svc := rental.NewService(repo, repo, repo)
 	handler := rental.NewHandler(svc)
 	mux.HandleFunc("GET /rentals", handler.GetRentals)
+	mux.HandleFunc("POST /rentals", handler.CreateRental)
+	mux.HandleFunc("POST /rentals/{id}/return", handler.ReturnRental)
 }
 
 func registerInventoryRoutes(mux *http.ServeMux, conn *pgx.Conn) {

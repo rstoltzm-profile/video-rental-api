@@ -51,3 +51,40 @@ func (h *Handler) GetRentals(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(rentals)
 }
+
+func (h *Handler) CreateRental(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	var req CreateRentalRequest
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+	rental, err := h.service.CreateRental(r.Context(), req)
+	if err != nil {
+		http.Error(w, "Failed to create rental", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Location", fmt.Sprintf("/v1/rentals/%d", rental))
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(map[string]int{"id": rental})
+}
+
+func (h *Handler) ReturnRental(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	idStr := r.PathValue("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid customer ID", http.StatusBadRequest)
+		return
+	}
+	err = h.service.ReturnRentalByID(r.Context(), id)
+
+	if err != nil {
+		http.Error(w, "Failed to return rental", http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent) // 204
+}
