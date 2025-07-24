@@ -1,0 +1,177 @@
+definitions:
+  customer.AddressInput:
+    properties:
+      address:
+        maxLength: 100
+        minLength: 1
+        type: string
+      address2:
+        maxLength: 100
+        type: string
+      city_name:
+        maxLength: 50
+        minLength: 1
+        type: string
+      district:
+        maxLength: 50
+        minLength: 1
+        type: string
+      phone:
+        type: string
+      postal_code:
+        maxLength: 6
+        minLength: 4
+        type: string
+    required:
+    - address
+    - city_name
+    - district
+    - phone
+    - postal_code
+    type: object
+  customer.CreateCustomerRequest:
+    properties:
+      address:
+        $ref: '#/definitions/customer.AddressInput'
+      email:
+        type: string
+      first_name:
+        maxLength: 50
+        minLength: 1
+        type: string
+      last_name:
+        maxLength: 50
+        minLength: 1
+        type: string
+      store_id:
+        type: integer
+    required:
+    - address
+    - email
+    - first_name
+    - last_name
+    - store_id
+    type: object
+  customer.Customer:
+    properties:
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /v1/customers:
+    get:
+      description: get all customers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/customer.Customer'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: List customers
+      tags:
+      - customers
+    post:
+      consumes:
+      - application/json
+      description: Create a new customer
+      parameters:
+      - description: Customer data
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/customer.CreateCustomerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/customer.Customer'
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "500":
+          description: Failed to create customer
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Create customer
+      tags:
+      - customers
+  /v1/customers/{id}:
+    delete:
+      description: Delete a customer by their ID
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "400":
+          description: Invalid customer ID
+          schema:
+            type: string
+        "500":
+          description: Failed to delete customer
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Delete customer
+      tags:
+      - customers
+    get:
+      description: Get a customer by their ID
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/customer.Customer'
+        "400":
+          description: Invalid customer ID
+          schema:
+            type: string
+        "404":
+          description: Customer not found
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get customer by ID
+      tags:
+      - customers
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: X-API-Key
+    type: apiKey
+swagger: "2.0"

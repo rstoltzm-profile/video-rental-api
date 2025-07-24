@@ -10,6 +10,7 @@ import (
 	"github.com/rstoltzm-profile/video-rental-api/internal/middleware"
 	"github.com/rstoltzm-profile/video-rental-api/internal/rental"
 	"github.com/rstoltzm-profile/video-rental-api/internal/store"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 func NewRouter(pool *pgxpool.Pool, apiKey string) http.Handler {
@@ -18,6 +19,7 @@ func NewRouter(pool *pgxpool.Pool, apiKey string) http.Handler {
 	// health check
 	mux.HandleFunc("/health", healthHandler)
 	mux.HandleFunc("/health/pool", healthHandlerWithPool(pool))
+	mux.Handle("/swagger/", httpSwagger.WrapHandler)
 
 	// v1 routes
 	v1 := http.NewServeMux()
