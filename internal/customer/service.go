@@ -31,7 +31,11 @@ func (s *service) GetCustomers(ctx context.Context) ([]Customer, error) {
 }
 
 func (s *service) GetCustomerByID(ctx context.Context, id int) (Customer, error) {
-	return s.reader.GetByID(ctx, id)
+	customer, err := s.reader.GetByID(ctx, id)
+	if err != nil {
+		return Customer{}, fmt.Errorf("Customer not found")
+	}
+	return customer, nil
 }
 
 func (s *service) CreateCustomer(ctx context.Context, req CreateCustomerRequest) (*Customer, error) {
