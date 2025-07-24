@@ -18,13 +18,14 @@ build-linux:
 
 ## Run the application locally
 run:
-	export PORT=8080
-	export API_KEY="secure-dev-key-123"
 	go run $(MAIN)
 
 ## Run unit tests
 test:
 	go test ./internal/... -v
+
+docs-swagger:
+	swag init --generalInfo cmd/server/main.go --output docs
 
 ## Run integration tests
 integration-test:	
