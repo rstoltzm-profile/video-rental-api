@@ -10,7 +10,7 @@ type SimpleAuthService struct{}
 
 func (s *SimpleAuthService) Authenticate(username, password string) (string, error) {
 	if username == "staff1" && password == "password123" {
-		return "staff1-token", nil
+		return "secure-dev-key-123", nil
 	}
 	return "", errors.New("invalid credentials")
 }

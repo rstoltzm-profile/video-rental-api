@@ -28,7 +28,11 @@ docs-swagger:
 	swag init --generalInfo cmd/server/main.go --output docs
 
 ## Run integration tests
-integration-test:	
+integration-test:
+	@echo "\n# Running Access Tests..."
+	python3 test/access.py
+	@echo "# Finished Access Tests...\n"
+
 	@echo "\n# Running Customer Tests"
 	python3 test/customer.py
 	@echo "# Finished Customer Tests...\n"
