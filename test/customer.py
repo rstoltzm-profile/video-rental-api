@@ -129,7 +129,15 @@ class APITestCase(unittest.TestCase):
         response = requests.get(url, headers=self.HEADERS, timeout=60)
         customer_rentals = response.json()[0]
         self.assertIn("first_name", customer_rentals, "Missing 'first_name' in customer data")
-        print(f"\n✅ customer late rentals returned from {url}: {customer_rentals['first_name']}")
+        print(f"\n✅ Customer late rentals returned from {url}: {customer_rentals['first_name']}")
+
+    def test_make_payment(self):
+        url = f"{self.BASE_URL}/v1/payments"
+        body = self.read_json("payloads/payment.json")
+        response = requests.post(url, json=body, headers=self.HEADERS, timeout=60)
+        self.assertEqual(response.status_code, 201, f"Make payment failed: {response.text}")
+        payment_id = response.json()
+        print(f"\n✅ Make payment succeeded: {payment_id}")
 
     def read_json(self, file_name):
         """Helper to read and parse JSON file"""

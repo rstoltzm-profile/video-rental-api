@@ -16,3 +16,9 @@ POST /payments
 Payload: {rental_id, amount, customer_id, staff_id}
 Uses the payment table.
 ```
+
+## payment table needs partitions
+```
+CREATE TABLE public.payment_p2025_07 PARTITION OF public.payment
+FOR VALUES FROM ('2025-07-01 00:00:00+00') TO ('2025-08-01 00:00:00+00');
+``` 
