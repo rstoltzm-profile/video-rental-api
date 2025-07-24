@@ -28,9 +28,10 @@ func NewRouter(pool *pgxpool.Pool, apiKey string) http.Handler {
 	registerFilmRoutes(v1, pool)
 
 	mux.Handle("/v1/", http.StripPrefix("/v1",
-		middleware.RequestSizeMiddleware(
-			middleware.ApiKeyMiddleware(apiKey,
-				middleware.ErrorMiddleware(v1.ServeHTTP)))))
+		middleware.CORSMiddleware(
+			middleware.RequestSizeMiddleware(
+				middleware.ApiKeyMiddleware(apiKey,
+					middleware.ErrorMiddleware(v1.ServeHTTP))))))
 	return mux
 }
 
