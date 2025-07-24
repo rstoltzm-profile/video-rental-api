@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 const baseFilmQuery = `
@@ -50,20 +51,20 @@ type TransactionManager interface {
 }
 
 type repository struct {
-	conn *pgx.Conn
+	pool *pgxpool.Pool
 }
 
-func NewRepository(conn *pgx.Conn) Repository {
-	return &repository{conn: conn}
+func NewRepository(pool *pgxpool.Pool) Repository {
+	return &repository{pool: pool}
 }
 
 func (r *repository) BeginTx(ctx context.Context) (pgx.Tx, error) {
-	return r.conn.Begin(ctx)
+	return r.pool.Begin(ctx)
 }
 
 func (r *repository) GetFilms(ctx context.Context) ([]Film, error) {
 	query := baseFilmQuery
-	rows, err := r.conn.Query(ctx, query)
+	rows, err := r.pool.Query(ctx, query)
 	if err != nil {
 		return nil, err
 	}
@@ -84,14 +85,14 @@ func (r *repository) GetFilmByID(ctx context.Context, id int) (Film, error) {
 	var c Film
 	query := baseFilmQuery + ` WHERE film.film_id = $1`
 
-	err := r.conn.QueryRow(ctx, query, id).Scan(&c.Title, &c.Description, &c.ReleaseYear, &c.Language, &c.Rating)
+	err := r.pool.QueryRow(ctx, query, id).Scan(&c.Title, &c.Description, &c.ReleaseYear, &c.Language, &c.Rating)
 
 	return c, err
 }
 
 func (r *repository) FindByTitle(ctx context.Context, title string) ([]Film, error) {
 	query := baseFilmQuery + ` WHERE film.title = $1`
-	rows, err := r.conn.Query(ctx, query, title)
+	rows, err := r.pool.Query(ctx, query, title)
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +111,7 @@ func (r *repository) FindByTitle(ctx context.Context, title string) ([]Film, err
 }
 
 func (r *repository) FindFilmWithActorsAndCategoriesByID(ctx context.Context, id int) (FilmWithActorsCategories, error) {
-	rows, err := r.conn.Query(ctx, baseFilmWithActorsQuery, id)
+	rows, err := r.pool.Query(ctx, baseFilmWithActorsQuery, id)
 	if err != nil {
 		return FilmWithActorsCategories{}, err
 	}

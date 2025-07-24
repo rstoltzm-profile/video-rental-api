@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type StoreReader interface {
@@ -20,15 +21,15 @@ type TransactionManager interface {
 }
 
 type repository struct {
-	conn *pgx.Conn
+	pool *pgxpool.Pool
 }
 
-func NewRepository(conn *pgx.Conn) Repository {
-	return &repository{conn: conn}
+func NewRepository(pool *pgxpool.Pool) Repository {
+	return &repository{pool: pool}
 }
 
 func (r *repository) BeginTx(ctx context.Context) (pgx.Tx, error) {
-	return r.conn.Begin(ctx)
+	return r.pool.Begin(ctx)
 }
 
 func (r *repository) CountTitlesByStore(ctx context.Context, storeID int) ([]StoreInventorySummary, error) {
@@ -44,7 +45,7 @@ func (r *repository) CountTitlesByStore(ctx context.Context, storeID int) ([]Sto
 			store.store_id = $1
 		GROUP BY store.store_id, film.title;
 	`
-	rows, err := r.conn.Query(ctx, query, storeID)
+	rows, err := r.pool.Query(ctx, query, storeID)
 	if err != nil {
 		return nil, err
 	}
