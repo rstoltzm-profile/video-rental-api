@@ -1,16 +1,3 @@
-5. List Rentals by Customer
-API:
-GET /customers/{id}/rentals
-GET /customers/{id}/rentals?status=late
-Useful for showing customer rental history or late returns.
-
-6. Payment Integration (Basic)
-Record payments made by customers.
-API:
-POST /payments
-Payload: {rental_id, amount, customer_id, staff_id}
-Uses the payment table.
-
 7. Basic Auth (Session/Token)
 Authenticate staff or customers.
 Could start with simple token auth (even hardcoded for MVP).

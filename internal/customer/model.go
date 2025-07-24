@@ -1,5 +1,7 @@
 package customer
 
+import "time"
+
 type Customer struct {
 	ID        int    `json:"id"`
 	FirstName string `json:"first_name"`
@@ -22,4 +24,14 @@ type AddressInput struct {
 	CityName   string `json:"city_name" validate:"required,min=1,max=50"`
 	PostalCode string `json:"postal_code" validate:"required,min=4,max=6"`
 	Phone      string `json:"phone" validate:"required,e164"`
+}
+
+type CustomerRentals struct {
+	FirstName     string    `json:"first_name"`
+	LastName      string    `json:"last_name"`
+	Phone         string    `json:"phone"`
+	RentalDate    time.Time `json:"rental_date"`
+	Title         string    `json:"title"`
+	RentalDueDate time.Time `json:"rental_due_date"`
+	Overdue       bool      `json:"overdue"`
 }

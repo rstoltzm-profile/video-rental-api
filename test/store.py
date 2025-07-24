@@ -12,7 +12,7 @@ class StoreTests(unittest.TestCase):
         """Test GET /v1/stores/1/inventory/summary returns non-empty list"""
         print("\n🏪 Testing: GET /v1/stores/1/inventory/summary")
         url = f"{self.BASE_URL}/v1/stores/1/inventory/summary"
-        response = requests.get(url, headers=self.HEADERS)
+        response = requests.get(url, headers=self.HEADERS, timeout=60)
         self.assertEqual(response.status_code, 200)
         summary = response.json()
         self.assertIsInstance(summary, list)

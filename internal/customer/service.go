@@ -8,6 +8,8 @@ import (
 type Service interface {
 	GetCustomers(ctx context.Context) ([]Customer, error)
 	GetCustomerByID(ctx context.Context, id int) (Customer, error)
+	GetCustomerRentalsByID(ctx context.Context, id int) ([]CustomerRentals, error)
+	GetLateCustomerRentalsByID(ctx context.Context, id int) ([]CustomerRentals, error)
 	CreateCustomer(ctx context.Context, req CreateCustomerRequest) (*Customer, error)
 	DeleteCustomerByID(ctx context.Context, id int) error
 }
@@ -72,4 +74,12 @@ func (s *service) CreateCustomer(ctx context.Context, req CreateCustomerRequest)
 
 func (s *service) DeleteCustomerByID(ctx context.Context, id int) error {
 	return s.writer.DeleteCustomerByID(ctx, id)
+}
+
+func (s *service) GetCustomerRentalsByID(ctx context.Context, id int) ([]CustomerRentals, error) {
+	return s.reader.FindCustomerRentalsByID(ctx, id)
+}
+
+func (s *service) GetLateCustomerRentalsByID(ctx context.Context, id int) ([]CustomerRentals, error) {
+	return s.reader.FindLateCustomerRentalsByID(ctx, id)
 }

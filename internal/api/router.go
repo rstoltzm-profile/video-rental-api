@@ -43,6 +43,7 @@ func registerCustomerRoutes(mux *http.ServeMux, pool *pgxpool.Pool) {
 	handler := customer.NewHandler(svc)
 	mux.HandleFunc("GET /customers", handler.GetCustomers)
 	mux.HandleFunc("GET /customers/{id}", handler.GetCustomerByID)
+	mux.HandleFunc("GET /customers/{id}/rentals", handler.GetCustomerRentalsByID)
 	mux.HandleFunc("POST /customers", handler.CreateCustomer)
 	mux.HandleFunc("DELETE /customers/{id}", handler.DeleteCustomerByID)
 }
