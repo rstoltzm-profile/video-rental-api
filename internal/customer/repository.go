@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type CustomerReader interface {
@@ -30,15 +31,15 @@ type TransactionManager interface {
 }
 
 type repository struct {
-	conn *pgx.Conn
+	pool *pgxpool.Pool
 }
 
-func NewRepository(conn *pgx.Conn) Repository {
-	return &repository{conn: conn}
+func NewRepository(pool *pgxpool.Pool) Repository {
+	return &repository{pool: pool}
 }
 
 func (r *repository) GetAll(ctx context.Context) ([]Customer, error) {
-	rows, err := r.conn.Query(ctx, `SELECT customer_id, first_name, last_name, email FROM customer`)
+	rows, err := r.pool.Query(ctx, `SELECT customer_id, first_name, last_name, email FROM customer`)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +58,7 @@ func (r *repository) GetAll(ctx context.Context) ([]Customer, error) {
 
 func (r *repository) GetByID(ctx context.Context, id int) (Customer, error) {
 	var c Customer
-	err := r.conn.QueryRow(ctx,
+	err := r.pool.QueryRow(ctx,
 		`SELECT customer_id, first_name, last_name, email FROM customer WHERE customer_id = $1`,
 		id,
 	).Scan(&c.ID, &c.FirstName, &c.LastName, &c.Email)
@@ -67,7 +68,7 @@ func (r *repository) GetByID(ctx context.Context, id int) (Customer, error) {
 
 func (r *repository) GetCityIDByName(ctx context.Context, tx pgx.Tx, cityName string) (int, error) {
 	var cityID int
-	err := r.conn.QueryRow(ctx,
+	err := r.pool.QueryRow(ctx,
 		`SELECT city_id FROM city where city = $1`,
 		cityName,
 	).Scan(&cityID)
@@ -80,7 +81,7 @@ func (r *repository) GetCityIDByName(ctx context.Context, tx pgx.Tx, cityName st
 }
 
 func (r *repository) BeginTx(ctx context.Context) (pgx.Tx, error) {
-	return r.conn.Begin(ctx)
+	return r.pool.Begin(ctx)
 }
 
 func (r *repository) InsertAddress(ctx context.Context, tx pgx.Tx, address AddressInput, cityID int) (int, error) {
@@ -127,7 +128,7 @@ func (r *repository) InsertCustomer(ctx context.Context, tx pgx.Tx, req CreateCu
 }
 
 func (r *repository) DeleteCustomerByID(ctx context.Context, id int) error {
-	cmdTag, err := r.conn.Exec(ctx,
+	cmdTag, err := r.pool.Exec(ctx,
 		`DELETE FROM customer WHERE customer_id = $1`,
 		id,
 	)

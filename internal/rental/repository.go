@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type RentalReader interface {
@@ -31,15 +32,15 @@ type TransactionManager interface {
 }
 
 type repository struct {
-	conn *pgx.Conn
+	pool *pgxpool.Pool
 }
 
-func NewRepository(conn *pgx.Conn) Repository {
-	return &repository{conn: conn}
+func NewRepository(pool *pgxpool.Pool) Repository {
+	return &repository{pool: pool}
 }
 
 func (r *repository) BeginTx(ctx context.Context) (pgx.Tx, error) {
-	return r.conn.Begin(ctx)
+	return r.pool.Begin(ctx)
 }
 
 func (r *repository) GetRentals(ctx context.Context) ([]Rental, error) {
@@ -61,7 +62,7 @@ func (r *repository) GetRentals(ctx context.Context) ([]Rental, error) {
 	ORDER BY
 		rental.rental_date
 	`
-	rows, err := r.conn.Query(ctx, query)
+	rows, err := r.pool.Query(ctx, query)
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +99,7 @@ func (r *repository) GetLateRentals(ctx context.Context) ([]Rental, error) {
 	ORDER BY
 		rental.rental_date
 	`
-	rows, err := r.conn.Query(ctx, query)
+	rows, err := r.pool.Query(ctx, query)
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +136,7 @@ func (r *repository) GetRentalsByCustomerID(ctx context.Context, customerID int)
 	ORDER BY
 		rental.rental_date
 	`
-	rows, err := r.conn.Query(ctx, query, customerID)
+	rows, err := r.pool.Query(ctx, query, customerID)
 	if err != nil {
 		return nil, err
 	}
@@ -173,7 +174,7 @@ func (r *repository) GetLateRentalsByCustomerID(ctx context.Context, customerID 
 	ORDER BY
 		rental.rental_date
 	`
-	rows, err := r.conn.Query(ctx, query, customerID)
+	rows, err := r.pool.Query(ctx, query, customerID)
 	if err != nil {
 		return nil, err
 	}
@@ -201,7 +202,7 @@ func (r *repository) InsertRental(ctx context.Context, req CreateRentalRequest) 
 		)
 		RETURNING rental_id
 	`
-	err := r.conn.QueryRow(ctx, query, req.InventoryID, req.CustomerID, req.StaffID).Scan(&rental_id)
+	err := r.pool.QueryRow(ctx, query, req.InventoryID, req.CustomerID, req.StaffID).Scan(&rental_id)
 
 	if err != nil {
 		return -1, err
@@ -216,7 +217,7 @@ func (r *repository) UpdateRentalByID(ctx context.Context, id int) error {
 	SET return_date = CURRENT_TIMESTAMP
 	WHERE rental_id = $1
 	`
-	cmdTag, err := r.conn.Exec(ctx, query, id)
+	cmdTag, err := r.pool.Exec(ctx, query, id)
 	if err != nil {
 		return fmt.Errorf("update rental failed: %w", err)
 	}
@@ -247,7 +248,7 @@ func (r *repository) GetActiveRentalByInventoryID(ctx context.Context, inventory
 	ORDER BY
 		rental.rental_date
 	`
-	err := r.conn.QueryRow(ctx, query, inventoryID).Scan(&rental.FirstName, &rental.LastName, &rental.Phone, &rental.RentalDate, &rental.Title)
+	err := r.pool.QueryRow(ctx, query, inventoryID).Scan(&rental.FirstName, &rental.LastName, &rental.Phone, &rental.RentalDate, &rental.Title)
 	if err == pgx.ErrNoRows {
 		return nil, nil // No Active rental
 	}

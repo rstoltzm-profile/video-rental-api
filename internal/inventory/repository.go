@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type InventoryReader interface {
@@ -22,15 +23,15 @@ type TransactionManager interface {
 }
 
 type repository struct {
-	conn *pgx.Conn
+	pool *pgxpool.Pool
 }
 
-func NewRepository(conn *pgx.Conn) Repository {
-	return &repository{conn: conn}
+func NewRepository(pool *pgxpool.Pool) Repository {
+	return &repository{pool: pool}
 }
 
 func (r *repository) BeginTx(ctx context.Context) (pgx.Tx, error) {
-	return r.conn.Begin(ctx)
+	return r.pool.Begin(ctx)
 }
 
 func (r *repository) GetInventory(ctx context.Context) ([]Inventory, error) {
@@ -48,7 +49,7 @@ func (r *repository) GetInventory(ctx context.Context) ([]Inventory, error) {
 		INNER JOIN film ON inventory.film_id = film.film_id
 		INNER JOIN address ON store.address_id = address.address_id
 	`
-	rows, err := r.conn.Query(ctx, query)
+	rows, err := r.pool.Query(ctx, query)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +83,7 @@ func (r *repository) GetInventoryByStore(ctx context.Context, storeID int) ([]In
 	WHERE
 		store.store_id = $1
 	`
-	rows, err := r.conn.Query(ctx, query, storeID)
+	rows, err := r.pool.Query(ctx, query, storeID)
 	if err != nil {
 		return nil, err
 	}
@@ -132,7 +133,7 @@ func (r *repository) FindInventoryAvailable(ctx context.Context, storeID int, fi
 	LIMIT 1;
 	`
 
-	err := r.conn.QueryRow(ctx, query, storeID, filmID).Scan(&i.InventoryID, &i.StoreID, &i.FilmID, &i.Title, &i.Available)
+	err := r.pool.QueryRow(ctx, query, storeID, filmID).Scan(&i.InventoryID, &i.StoreID, &i.FilmID, &i.Title, &i.Available)
 
 	return i, err
 }
