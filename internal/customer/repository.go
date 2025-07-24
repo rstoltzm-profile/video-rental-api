@@ -12,6 +12,8 @@ type CustomerReader interface {
 	GetAll(ctx context.Context) ([]Customer, error)
 	GetByID(ctx context.Context, id int) (Customer, error)
 	GetCityIDByName(ctx context.Context, tx pgx.Tx, cityName string) (int, error)
+	FindCustomerRentalsByID(ctx context.Context, id int) ([]CustomerRentals, error)
+	FindLateCustomerRentalsByID(ctx context.Context, id int) ([]CustomerRentals, error)
 }
 
 type CustomerWriter interface {
@@ -139,4 +141,85 @@ func (r *repository) DeleteCustomerByID(ctx context.Context, id int) error {
 		return fmt.Errorf("no customer found with ID %d", id)
 	}
 	return nil
+}
+
+func (r *repository) FindCustomerRentalsByID(ctx context.Context, id int) ([]CustomerRentals, error) {
+	query := `
+	SELECT
+		customer.first_name,
+		customer.last_name, 
+		address.phone,
+		rental.rental_date,
+		film.title,
+		rental.rental_date + (film.rental_duration || ' days')::interval AS rental_due_date,
+		CURRENT_DATE > rental.rental_date + (film.rental_duration || ' days')::interval as overdue
+	FROM
+		rental
+		INNER JOIN customer ON rental.customer_id = customer.customer_id
+		INNER JOIN address ON customer.address_id = address.address_id
+		INNER JOIN inventory ON rental.inventory_id = inventory.inventory_id
+		INNER JOIN film ON inventory.film_id = film.film_id
+	WHERE
+		rental.return_date IS NULL
+		and customer.customer_id = $1
+	ORDER BY
+		rental.rental_date
+	`
+	rows, err := r.pool.Query(ctx, query, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var customerRentals []CustomerRentals
+	for rows.Next() {
+		var c CustomerRentals
+		if err := rows.Scan(&c.FirstName, &c.LastName, &c.Phone, &c.RentalDate, &c.Title, &c.RentalDueDate, &c.Overdue); err != nil {
+			return nil, err
+		}
+		customerRentals = append(customerRentals, c)
+	}
+	fmt.Println(customerRentals)
+	return customerRentals, nil
+}
+
+func (r *repository) FindLateCustomerRentalsByID(ctx context.Context, id int) ([]CustomerRentals, error) {
+	query := `
+	SELECT
+		customer.first_name,
+		customer.last_name, 
+		address.phone,
+		rental.rental_date,
+		film.title,
+		rental.rental_date + (film.rental_duration || ' days')::interval AS rental_due_date,
+		CURRENT_DATE > rental.rental_date + (film.rental_duration || ' days')::interval as overdue
+	FROM
+		rental
+		INNER JOIN customer ON rental.customer_id = customer.customer_id
+		INNER JOIN address ON customer.address_id = address.address_id
+		INNER JOIN inventory ON rental.inventory_id = inventory.inventory_id
+		INNER JOIN film ON inventory.film_id = film.film_id
+	WHERE
+		rental.return_date IS NULL
+		and customer.customer_id = $1
+		and CURRENT_DATE > rental.rental_date + (film.rental_duration || ' days')::interval
+	ORDER BY
+		rental.rental_date
+	`
+	rows, err := r.pool.Query(ctx, query, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var customerRentals []CustomerRentals
+	for rows.Next() {
+		var c CustomerRentals
+		if err := rows.Scan(&c.FirstName, &c.LastName, &c.Phone, &c.RentalDate, &c.Title, &c.RentalDueDate, &c.Overdue); err != nil {
+			return nil, err
+		}
+		customerRentals = append(customerRentals, c)
+	}
+	fmt.Println(customerRentals)
+	return customerRentals, nil
 }

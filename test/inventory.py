@@ -12,7 +12,7 @@ class InventoryTests(unittest.TestCase):
         """Test GET /v1/inventory returns non-empty list"""
         print("\n📦 Testing: GET /v1/inventory")
         url = f"{self.BASE_URL}/v1/inventory"
-        response = requests.get(url, headers=self.HEADERS)
+        response = requests.get(url, headers=self.HEADERS, timeout=60)
         self.assertEqual(response.status_code, 200)
         inventory = response.json()
         self.assertIsInstance(inventory, list)
@@ -23,7 +23,7 @@ class InventoryTests(unittest.TestCase):
         """Test GET /v1/inventory?store_id=1 returns non-empty list"""
         print("\n🏬 Testing: GET /v1/inventory?store_id=1")
         url = f"{self.BASE_URL}/v1/inventory?store_id=1"
-        response = requests.get(url, headers=self.HEADERS)
+        response = requests.get(url, headers=self.HEADERS, timeout=60)
         self.assertEqual(response.status_code, 200)
         inventory = response.json()
         self.assertIsInstance(inventory, list)
@@ -34,7 +34,7 @@ class InventoryTests(unittest.TestCase):
         """Test GET /v1/inventory/available?film_id=1&store_id=2 returns non-empty list"""
         print("\n🎞️ Testing: GET /v1/inventory/available?film_id=1&store_id=2")
         url = f"{self.BASE_URL}/v1/inventory/available?film_id=1&store_id=2"
-        response = requests.get(url, headers=self.HEADERS)
+        response = requests.get(url, headers=self.HEADERS, timeout=60)
         self.assertEqual(response.status_code, 200)
         inventory = response.json()
         self.assertIsInstance(inventory, dict)

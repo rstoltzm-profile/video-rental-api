@@ -131,3 +131,41 @@ func (h *Handler) DeleteCustomerByID(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusNoContent) // 204
 }
+
+// GetCustomerRentalsByID godoc
+// @Summary      Get Customer Rentals
+// @Description  Get Customer Rentals By ID
+// @Tags         customers
+// @Param        id   path      int  true  "Customer ID"
+// @Success      200  {object}  customer.Customer
+// @Failure      400  {string}  string  "Invalid customer ID"
+// @Failure      404  {string}  string  "Customer not found"
+// @Security     ApiKeyAuth
+// @Router       /v1/customers/{id}/rentals [get]
+func (h *Handler) GetCustomerRentalsByID(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	// Parameters
+	idStr := r.PathValue("id")
+	late := r.URL.Query().Get("late")
+	var customerRentals []CustomerRentals
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid customer ID", http.StatusBadRequest)
+		return
+	}
+
+	if late == "true" {
+		customerRentals, err = h.service.GetLateCustomerRentalsByID(r.Context(), id)
+	} else {
+		customerRentals, err = h.service.GetCustomerRentalsByID(r.Context(), id)
+	}
+
+	if err != nil {
+		http.Error(w, "Failed to fetch customers", http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(customerRentals)
+}

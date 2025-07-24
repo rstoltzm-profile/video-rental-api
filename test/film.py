@@ -12,7 +12,7 @@ class FilmTests(unittest.TestCase):
         """Test GET /v1/films returns non-empty list"""
         print("\n🎬 Testing: GET /v1/films")
         url = f"{self.BASE_URL}/v1/films"
-        response = requests.get(url, headers=self.HEADERS)
+        response = requests.get(url, headers=self.HEADERS, timeout=60)
         self.assertEqual(response.status_code, 200)
         films = response.json()
         self.assertIsInstance(films, list)
@@ -23,7 +23,7 @@ class FilmTests(unittest.TestCase):
         """Test GET /v1/films/1 returns film details"""
         print("\n🎞️ Testing: GET /v1/films/1")
         url = f"{self.BASE_URL}/v1/films/1"
-        response = requests.get(url, headers=self.HEADERS)
+        response = requests.get(url, headers=self.HEADERS, timeout=60)
         self.assertEqual(response.status_code, 200)
         film = response.json()
         self.assertIsInstance(film, dict)
@@ -34,7 +34,7 @@ class FilmTests(unittest.TestCase):
         """Test GET /v1/films/search?title=ACADEMY DINOSAUR returns results"""
         print("\n🔍 Testing: GET /v1/films/search?title=ACADEMY DINOSAUR")
         url = f"{self.BASE_URL}/v1/films/search?title=ACADEMY%20DINOSAUR"
-        response = requests.get(url, headers=self.HEADERS)
+        response = requests.get(url, headers=self.HEADERS, timeout=60)
         self.assertEqual(response.status_code, 200)
         results = response.json()
         self.assertIsInstance(results, list)
@@ -45,7 +45,7 @@ class FilmTests(unittest.TestCase):
         """Test GET /v1/films/1/with-actors-categories returns enriched film data"""
         print("\n🎭 Testing: GET /v1/films/1/with-actors-categories")
         url = f"{self.BASE_URL}/v1/films/1/with-actors-categories"
-        response = requests.get(url, headers=self.HEADERS)
+        response = requests.get(url, headers=self.HEADERS, timeout=60)
         self.assertEqual(response.status_code, 200)
         enriched_film = response.json()
         self.assertIsInstance(enriched_film, dict)

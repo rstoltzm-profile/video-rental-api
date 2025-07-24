@@ -23,6 +23,16 @@ func (m *mockCustomerReader) GetByID(ctx context.Context, id int) (Customer, err
 	return args.Get(0).(Customer), args.Error(1)
 }
 
+func (m *mockCustomerReader) FindCustomerRentalsByID(ctx context.Context, id int) ([]CustomerRentals, error) {
+	args := m.Called(ctx, id)
+	return args.Get(0).([]CustomerRentals), args.Error(1)
+}
+
+func (m *mockCustomerReader) FindLateCustomerRentalsByID(ctx context.Context, id int) ([]CustomerRentals, error) {
+	args := m.Called(ctx, id)
+	return args.Get(0).([]CustomerRentals), args.Error(1)
+}
+
 func (m *mockCustomerReader) GetCityIDByName(ctx context.Context, tx pgx.Tx, cityName string) (int, error) {
 	args := m.Called(ctx, tx, cityName)
 	return args.Int(0), args.Error(1)

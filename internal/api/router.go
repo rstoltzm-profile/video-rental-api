@@ -8,6 +8,7 @@ import (
 	"github.com/rstoltzm-profile/video-rental-api/internal/film"
 	"github.com/rstoltzm-profile/video-rental-api/internal/inventory"
 	"github.com/rstoltzm-profile/video-rental-api/internal/middleware"
+	"github.com/rstoltzm-profile/video-rental-api/internal/payment"
 	"github.com/rstoltzm-profile/video-rental-api/internal/rental"
 	"github.com/rstoltzm-profile/video-rental-api/internal/store"
 	httpSwagger "github.com/swaggo/http-swagger"
@@ -28,6 +29,7 @@ func NewRouter(pool *pgxpool.Pool, apiKey string) http.Handler {
 	registerInventoryRoutes(v1, pool)
 	registerStoreRoutes(v1, pool)
 	registerFilmRoutes(v1, pool)
+	registerPaymentRoutes(v1, pool)
 
 	mux.Handle("/v1/", http.StripPrefix("/v1",
 		middleware.CORSMiddleware(
@@ -43,6 +45,7 @@ func registerCustomerRoutes(mux *http.ServeMux, pool *pgxpool.Pool) {
 	handler := customer.NewHandler(svc)
 	mux.HandleFunc("GET /customers", handler.GetCustomers)
 	mux.HandleFunc("GET /customers/{id}", handler.GetCustomerByID)
+	mux.HandleFunc("GET /customers/{id}/rentals", handler.GetCustomerRentalsByID)
 	mux.HandleFunc("POST /customers", handler.CreateCustomer)
 	mux.HandleFunc("DELETE /customers/{id}", handler.DeleteCustomerByID)
 }
@@ -79,4 +82,11 @@ func registerFilmRoutes(mux *http.ServeMux, pool *pgxpool.Pool) {
 	mux.HandleFunc("GET /films/{id}", handler.GetFilmByID)
 	mux.HandleFunc("GET /films/search", handler.SearchFilm)
 	mux.HandleFunc("GET /films/", handler.GetFilmWithActorsAndCategoriesByID)
+}
+
+func registerPaymentRoutes(mux *http.ServeMux, pool *pgxpool.Pool) {
+	repo := payment.NewRepository(pool)
+	svc := payment.NewService(repo)
+	handler := payment.NewHandler(svc)
+	mux.HandleFunc("POST /payments", handler.MakePayment)
 }
