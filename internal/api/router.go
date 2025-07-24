@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/rstoltzm-profile/video-rental-api/internal/auth"
 	"github.com/rstoltzm-profile/video-rental-api/internal/customer"
 	"github.com/rstoltzm-profile/video-rental-api/internal/film"
 	"github.com/rstoltzm-profile/video-rental-api/internal/inventory"
@@ -16,6 +17,11 @@ import (
 
 func NewRouter(pool *pgxpool.Pool, apiKey string) http.Handler {
 	mux := http.NewServeMux()
+
+	// auth
+	authService := &auth.SimpleAuthService{}
+	authHandler := auth.NewHandler(authService)
+	mux.HandleFunc("/v1/login", authHandler.Login)
 
 	// health check
 	mux.HandleFunc("/health", healthHandler)
