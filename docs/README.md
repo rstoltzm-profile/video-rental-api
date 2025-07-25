@@ -4,7 +4,7 @@
 
 ## Changelog Index
 
-- See changes marked as x-name.md in docs/branch-timeline/
+- See changes marked as x-name.md in docs/mvp-build-process/
 - Number increments as project moves on
 
 ## Architecture & Structure
