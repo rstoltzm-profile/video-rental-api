@@ -2,6 +2,9 @@
 
 ![overview](overview.png)
 
+## Frontend
+- [https://github.com/rstoltzm-profile/video-rental-portal-django](https://github.com/rstoltzm-profile/video-rental-portal-django)
+
 ## Changes
 * [Change log in Docs](docs/)
 
