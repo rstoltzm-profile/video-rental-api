@@ -16,6 +16,16 @@ func NewHandler(service Service) *Handler {
 	return &Handler{service: service}
 }
 
+// GetStoreInventorySummary godoc
+// @Summary      Get store inventory summary
+// @Description  Returns a summary count of inventory for a given store ID
+// @Tags         stores
+// @Produce      json
+// @Param        id   path      int  true  "Store ID"
+// @Success      200  {array}   store.StoreInventorySummary
+// @Failure      400  {string}  string "Invalid store ID"
+// @Failure      500  {string}  string "Internal Server Error"
+// @Router       /stores/{id}/inventory/summary [get]
 func (h *Handler) GetStoreInventorySummary(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 

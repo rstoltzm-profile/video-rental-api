@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	_ "github.com/rstoltzm-profile/video-rental-api/docs"
+	_ "github.com/rstoltzm-profile/video-rental-api/docs/swagger"
 	"github.com/rstoltzm-profile/video-rental-api/internal/app"
 )
 

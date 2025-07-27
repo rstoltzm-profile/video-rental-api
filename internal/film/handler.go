@@ -17,6 +17,14 @@ func NewHandler(service Service) *Handler {
 	return &Handler{service: service}
 }
 
+// GetFilms godoc
+// @Summary      List all films
+// @Description  Returns a list of all films
+// @Tags         films
+// @Produce      json
+// @Success      200  {array}   film.Film
+// @Failure      500  {string}  string "Internal Server Error"
+// @Router       /films [get]
 func (h *Handler) GetFilms(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -30,6 +38,17 @@ func (h *Handler) GetFilms(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(films)
 }
 
+// GetFilmByID godoc
+// @Summary      Get a film by ID
+// @Description  Returns a single film by its ID
+// @Tags         films
+// @Produce      json
+// @Param        id   path      int  true  "Film ID"
+// @Success      200  {object}  film.Film
+// @Failure      400  {string}  string "Invalid film ID"
+// @Failure      404  {string}  string "Film not found"
+// @Failure      500  {string}  string "Internal Server Error"
+// @Router       /films/{id} [get]
 func (h *Handler) GetFilmByID(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	idStr := r.PathValue("id")
@@ -47,6 +66,16 @@ func (h *Handler) GetFilmByID(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(film)
 }
 
+// SearchFilm godoc
+// @Summary      Search films by title
+// @Description  Returns a list of films matching the title query parameter
+// @Tags         films
+// @Produce      json
+// @Param        title  query     string  true  "Film title to search for"
+// @Success      200    {array}   film.Film
+// @Failure      400    {string}  string "Missing title query parameter"
+// @Failure      500    {string}  string "Internal Server Error"
+// @Router       /films/search [get]
 func (h *Handler) SearchFilm(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	title := r.URL.Query().Get("title")
@@ -68,10 +97,18 @@ func (h *Handler) SearchFilm(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(films)
 }
 
+// GetFilmWithActorsAndCategoriesByID godoc
+// @Summary      Get film with actors and categories by ID
+// @Description  Returns a film along with its actors and categories
+// @Tags         films
+// @Produce      json
+// @Param        id   path      int  true  "Film ID"
+// @Success      200  {object}  film.FilmWithActorsCategories
+// @Failure      400  {string}  string "Invalid film ID"
+// @Failure      404  {string}  string "Film not found"
+// @Router       /films/{id}/with-actors-categories [get]
 func (h *Handler) GetFilmWithActorsAndCategoriesByID(w http.ResponseWriter, r *http.Request) {
-	// URL example: /films/123/with-actors
 	parts := strings.Split(r.URL.Path, "/")
-	// parts: ["", "films", "123", "with-actors"]
 
 	if len(parts) != 4 || parts[3] != "with-actors-categories" {
 		http.NotFound(w, r)
