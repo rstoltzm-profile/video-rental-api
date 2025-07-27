@@ -19,6 +19,17 @@ func NewHandler(service Service) *Handler {
 	return &Handler{service: service}
 }
 
+// GetRentals godoc
+// @Summary      List rentals
+// @Description  Get all rentals or only late rentals based on query param
+// @Tags         rentals
+// @Accept       json
+// @Produce      json
+// @Param        late  query     bool  false  "Filter late rentals (true)"
+// @Success      200   {array}   rental.Rental
+// @Failure      500   {string}  string  "Failed to fetch rentals"
+// @Security     ApiKeyAuth
+// @Router       /v1/rentals [get]
 func (h *Handler) GetRentals(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -42,6 +53,18 @@ func (h *Handler) GetRentals(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(rentals)
 }
 
+// CreateRental godoc
+// @Summary      Create a rental
+// @Description  Create a new rental record
+// @Tags         rentals
+// @Accept       json
+// @Produce      json
+// @Param        rental  body      rental.CreateRentalRequest  true  "Rental request"
+// @Success      201     {object}  map[string]int  "Created rental ID"
+// @Failure      400     {string}  string  "Invalid input"
+// @Failure      500     {string}  string  "Failed to create rental"
+// @Security     ApiKeyAuth
+// @Router       /v1/rentals [post]
 func (h *Handler) CreateRental(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var req CreateRentalRequest
@@ -68,6 +91,18 @@ func (h *Handler) CreateRental(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]int{"id": rental})
 }
 
+// ReturnRental godoc
+// @Summary      Return rental
+// @Description  Mark a rental as returned by ID
+// @Tags         rentals
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "Rental ID"
+// @Success      204  {string}  string  "Rental returned successfully"
+// @Failure      400  {string}  string  "Invalid rental ID"
+// @Failure      500  {string}  string  "Failed to return rental"
+// @Security     ApiKeyAuth
+// @Router       /v1/rentals/{id}/return [put]
 func (h *Handler) ReturnRental(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	idStr := r.PathValue("id")

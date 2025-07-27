@@ -19,15 +19,15 @@ func NewHandler(service Service) *Handler {
 }
 
 // MakePayment godoc
-// @Summary      Make payment
-// @Description  Make a new payment
+// @Summary      Make a payment
+// @Description  Creates a new payment record
 // @Tags         payments
 // @Accept       json
 // @Produce      json
-// @Param        payment  body      payment.MakePaymentRequest  true  "Payment data"
-// @Success      201  {object}  payment.Payment
+// @Param        payment  body      payment.Payment  true  "Payment data"
+// @Success      201  {integer}  int  "Payment ID"
 // @Failure      400  {string}  string  "Invalid input"
-// @Failure      500  {string}  string  "Failed to Make Payment"
+// @Failure      500  {string}  string  "Failed to make payment"
 // @Security     ApiKeyAuth
 // @Router       /v1/payments [post]
 func (h *Handler) MakePayment(w http.ResponseWriter, r *http.Request) {

@@ -19,6 +19,13 @@ export PORT=8080
 export API_KEY="secure-dev-key-123"
 ```
 
+## Swagger Setup
+```
+go install github.com/swaggo/swag/cmd/swag@latest
+export PATH=$PATH:$(go env GOPATH)/bin
+make docs-swagger
+```
+
 ### Optional port change if needed on the pg db 6543:5432
 ```
 export DATABASE_URL="postgres://postgres:123456@localhost:6543"

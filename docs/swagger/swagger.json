@@ -1,0 +1,568 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/v1/customers": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get all customers",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customers"
+                ],
+                "summary": "List customers",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/customer.Customer"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create a new customer",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customers"
+                ],
+                "summary": "Create customer",
+                "parameters": [
+                    {
+                        "description": "Customer data",
+                        "name": "customer",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/customer.CreateCustomerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/customer.Customer"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to create customer",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/customers/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get a customer by their ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "customers"
+                ],
+                "summary": "Get customer by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Customer ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/customer.Customer"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid customer ID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Customer not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Delete a customer by their ID",
+                "tags": [
+                    "customers"
+                ],
+                "summary": "Delete customer",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Customer ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid customer ID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to delete customer",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/customers/{id}/rentals": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get Customer Rentals By ID",
+                "tags": [
+                    "customers"
+                ],
+                "summary": "Get Customer Rentals",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Customer ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/customer.Customer"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid customer ID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Customer not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/payments": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Creates a new payment record",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payments"
+                ],
+                "summary": "Make a payment",
+                "parameters": [
+                    {
+                        "description": "Payment data",
+                        "name": "payment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/payment.Payment"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Payment ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to make payment",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/rentals": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get all rentals or only late rentals based on query param",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rentals"
+                ],
+                "summary": "List rentals",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "description": "Filter late rentals (true)",
+                        "name": "late",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/rental.Rental"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to fetch rentals",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create a new rental record",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rentals"
+                ],
+                "summary": "Create a rental",
+                "parameters": [
+                    {
+                        "description": "Rental request",
+                        "name": "rental",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/rental.CreateRentalRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created rental ID",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to create rental",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/rentals/{id}/return": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Mark a rental as returned by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rentals"
+                ],
+                "summary": "Return rental",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Rental ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Rental returned successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid rental ID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to return rental",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "customer.AddressInput": {
+            "type": "object",
+            "required": [
+                "address",
+                "city_name",
+                "district",
+                "phone",
+                "postal_code"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 1
+                },
+                "address2": {
+                    "type": "string",
+                    "maxLength": 100
+                },
+                "city_name": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 1
+                },
+                "district": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 1
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "postal_code": {
+                    "type": "string",
+                    "maxLength": 6,
+                    "minLength": 4
+                }
+            }
+        },
+        "customer.CreateCustomerRequest": {
+            "type": "object",
+            "required": [
+                "address",
+                "email",
+                "first_name",
+                "last_name",
+                "store_id"
+            ],
+            "properties": {
+                "address": {
+                    "$ref": "#/definitions/customer.AddressInput"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 1
+                },
+                "last_name": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 1
+                },
+                "store_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "customer.Customer": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "last_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "payment.Payment": {
+            "type": "object",
+            "required": [
+                "amount",
+                "customer_id",
+                "rental_id",
+                "staff_id"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "customer_id": {
+                    "type": "integer"
+                },
+                "rental_id": {
+                    "type": "integer"
+                },
+                "staff_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "rental.CreateRentalRequest": {
+            "type": "object",
+            "properties": {
+                "customer_id": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "inventory_id": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "staff_id": {
+                    "type": "integer",
+                    "minimum": 0
+                }
+            }
+        },
+        "rental.Rental": {
+            "type": "object",
+            "properties": {
+                "first_name": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "rental_date": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "X-API-Key",
+            "in": "header"
+        }
+    }
+}

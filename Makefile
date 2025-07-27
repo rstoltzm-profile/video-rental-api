@@ -25,7 +25,7 @@ test:
 	go test ./internal/... -v
 
 docs-swagger:
-	swag init --generalInfo cmd/server/main.go --output docs
+	swag init --generalInfo cmd/server/main.go --output docs/swagger
 
 ## Run integration tests
 integration-test:
