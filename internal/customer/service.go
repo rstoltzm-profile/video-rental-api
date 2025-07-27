@@ -41,31 +41,21 @@ func (s *service) GetCustomerByID(ctx context.Context, id int) (Customer, error)
 }
 
 func (s *service) CreateCustomer(ctx context.Context, req CreateCustomerRequest) (*Customer, error) {
-	tx, err := s.tx.BeginTx(ctx) // helper to get pgx.Tx
-	if err != nil {
-		return nil, err
-	}
-	defer tx.Rollback(ctx)
-
 	// Get CityID
-	cityID, err := s.reader.GetCityIDByName(ctx, tx, req.Address.CityName)
+	cityID, err := s.reader.GetCityIDByName(ctx, req.Address.CityName)
 	if err != nil {
 		return nil, fmt.Errorf("invalid city name: %w", err)
 	}
 
 	// Insert Address
-	addressID, err := s.writer.InsertAddress(ctx, tx, req.Address, cityID)
+	addressID, err := s.writer.InsertAddress(ctx, req.Address, cityID)
 	if err != nil {
 		return nil, err
 	}
 
 	// Insert Customer
-	customer, err := s.writer.InsertCustomer(ctx, tx, req, addressID)
+	customer, err := s.writer.InsertCustomer(ctx, req, addressID)
 	if err != nil {
-		return nil, err
-	}
-
-	if err := tx.Commit(ctx); err != nil {
 		return nil, err
 	}
 

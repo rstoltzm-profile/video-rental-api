@@ -4,7 +4,9 @@
 
 ## Changelog Index
 
-- See changes marked as x-name.md in docs/mvp-build-process/
+- See changes marked as x-name.md in 
+  - docs/1-mvp-build-process/
+  - docs/2-mvp-post-process/
 - Number increments as project moves on
 
 ## Architecture & Structure

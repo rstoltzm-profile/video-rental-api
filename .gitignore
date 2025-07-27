@@ -14,4 +14,4 @@ vendor/
 
 database/
 
-.github/copilot-instructions.md
+.env
