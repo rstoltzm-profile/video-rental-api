@@ -8,8 +8,7 @@
 ## Changes
 * [Change log in Docs](docs/)
 
-## Landing Page
-- localhost:8080
+## Landing Page - localhost:8080
 ![landing](docs/landing_page.png)
 
 ## Install
