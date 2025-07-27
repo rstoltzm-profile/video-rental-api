@@ -1,0 +1,27 @@
+# payments table needs partitions
+
+##
+```
+CREATE TABLE public.payment_p2025_07 PARTITION OF public.payment
+FOR VALUES FROM ('2025-07-01 00:00:00+00') TO ('2025-08-01 00:00:00+00');
+```
+
+```
+CREATE TABLE public.payment_p2025_07 PARTITION OF public.payment
+FOR VALUES FROM ('2025-07-01 00:00:00+00') TO ('2025-08-01 00:00:00+00');
+
+CREATE TABLE public.payment_p2025_08 PARTITION OF public.payment
+FOR VALUES FROM ('2025-08-01 00:00:00+00') TO ('2025-09-01 00:00:00+00');
+
+CREATE TABLE public.payment_p2025_09 PARTITION OF public.payment
+FOR VALUES FROM ('2025-09-01 00:00:00+00') TO ('2025-10-01 00:00:00+00');
+
+CREATE TABLE public.payment_p2025_10 PARTITION OF public.payment
+FOR VALUES FROM ('2025-10-01 00:00:00+00') TO ('2025-11-01 00:00:00+00');
+
+CREATE TABLE public.payment_p2025_11 PARTITION OF public.payment
+FOR VALUES FROM ('2025-11-01 00:00:00+00') TO ('2025-12-01 00:00:00+00');
+
+CREATE TABLE public.payment_p2025_12 PARTITION OF public.payment
+FOR VALUES FROM ('2025-12-01 00:00:00+00') TO ('2026-01-01 00:00:00+00');
+```

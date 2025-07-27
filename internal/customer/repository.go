@@ -11,21 +11,21 @@ import (
 type CustomerReader interface {
 	GetAll(ctx context.Context) ([]Customer, error)
 	GetByID(ctx context.Context, id int) (Customer, error)
-	GetCityIDByName(ctx context.Context, tx pgx.Tx, cityName string) (int, error)
+	GetCityIDByName(ctx context.Context, cityName string) (int, error)
 	FindCustomerRentalsByID(ctx context.Context, id int) ([]CustomerRentals, error)
 	FindLateCustomerRentalsByID(ctx context.Context, id int) ([]CustomerRentals, error)
 }
 
 type CustomerWriter interface {
-	InsertAddress(ctx context.Context, tx pgx.Tx, address AddressInput, cityID int) (int, error)
-	InsertCustomer(ctx context.Context, tx pgx.Tx, req CreateCustomerRequest, addressID int) (*Customer, error)
+	InsertAddress(ctx context.Context, address AddressInput, cityID int) (int, error)
+	InsertCustomer(ctx context.Context, req CreateCustomerRequest, addressID int) (*Customer, error)
 	DeleteCustomerByID(ctx context.Context, id int) error
 }
 
 type Repository interface {
 	CustomerReader
 	CustomerWriter
-	BeginTx(ctx context.Context) (pgx.Tx, error)
+	TransactionManager
 }
 
 type TransactionManager interface {
@@ -38,6 +38,10 @@ type repository struct {
 
 func NewRepository(pool *pgxpool.Pool) Repository {
 	return &repository{pool: pool}
+}
+
+func (r *repository) BeginTx(ctx context.Context) (pgx.Tx, error) {
+	return r.pool.Begin(ctx)
 }
 
 func (r *repository) GetAll(ctx context.Context) ([]Customer, error) {
@@ -68,7 +72,7 @@ func (r *repository) GetByID(ctx context.Context, id int) (Customer, error) {
 	return c, err
 }
 
-func (r *repository) GetCityIDByName(ctx context.Context, tx pgx.Tx, cityName string) (int, error) {
+func (r *repository) GetCityIDByName(ctx context.Context, cityName string) (int, error) {
 	var cityID int
 	err := r.pool.QueryRow(ctx,
 		`SELECT city_id FROM city where city = $1`,
@@ -82,13 +86,9 @@ func (r *repository) GetCityIDByName(ctx context.Context, tx pgx.Tx, cityName st
 	return cityID, err
 }
 
-func (r *repository) BeginTx(ctx context.Context) (pgx.Tx, error) {
-	return r.pool.Begin(ctx)
-}
-
-func (r *repository) InsertAddress(ctx context.Context, tx pgx.Tx, address AddressInput, cityID int) (int, error) {
+func (r *repository) InsertAddress(ctx context.Context, address AddressInput, cityID int) (int, error) {
 	var id int
-	err := tx.QueryRow(ctx, `
+	err := r.pool.QueryRow(ctx, `
 	INSERT INTO address (address, address2, district, city_id, postal_code, phone)
 	VALUES ($1, $2, $3, $4, $5, $6)
 	RETURNING address_id
@@ -103,13 +103,14 @@ func (r *repository) InsertAddress(ctx context.Context, tx pgx.Tx, address Addre
 	return id, err
 }
 
-func (r *repository) InsertCustomer(ctx context.Context, tx pgx.Tx, req CreateCustomerRequest, addressID int) (*Customer, error) {
+func (r *repository) InsertCustomer(ctx context.Context, req CreateCustomerRequest, addressID int) (*Customer, error) {
 	var id int
-	err := tx.QueryRow(ctx, `
+	query := `
 		INSERT INTO customer (store_id, first_name, last_name, email, address_id, activebool, create_date, last_update, active)
 		VALUES ($1, $2, $3, $4, $5, TRUE, CURRENT_DATE, CURRENT_TIMESTAMP, 1)
 		RETURNING customer_id
-	`,
+	`
+	err := r.pool.QueryRow(ctx, query,
 		req.StoreID,
 		req.FirstName,
 		req.LastName,
