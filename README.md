@@ -8,6 +8,10 @@
 ## Changes
 * [Change log in Docs](docs/)
 
+## Landing Page
+- localhost:8080
+![landing](docs/landing_page.png)
+
 ## Install
 1. This API uses the database from [pagila](https://github.com/devrimgunduz/pagila)
 2. In another directory, clone the pagila db, and run docker-compose up

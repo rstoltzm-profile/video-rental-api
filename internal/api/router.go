@@ -18,6 +18,9 @@ import (
 func NewRouter(pool *pgxpool.Pool, apiKey string) http.Handler {
 	mux := http.NewServeMux()
 
+	// landing page
+	mux.HandleFunc("/", landingPage)
+
 	// auth
 	authService := &auth.SimpleAuthService{}
 	authHandler := auth.NewHandler(authService)
