@@ -17,6 +17,15 @@ func NewHandler(service Service) *Handler {
 	return &Handler{service: service}
 }
 
+// GetInventory godoc
+// @Summary      Get inventory
+// @Description  Retrieve inventory items. Optionally filter by store_id query param.
+// @Tags         inventory
+// @Produce      json
+// @Param        store_id  query     int     false  "Store ID to filter inventory"
+// @Success      200       {array}   inventory.Inventory
+// @Failure      500       {string}  string  "Internal Server Error"
+// @Router       /inventory [get]
 func (h *Handler) GetInventory(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	storeIDStr := r.URL.Query().Get("store_id")
@@ -40,8 +49,18 @@ func (h *Handler) GetInventory(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(inventory)
 }
 
+// GetInventoryAvailable godoc
+// @Summary      Check inventory availability
+// @Description  Check if a specific film is available in a given store
+// @Tags         inventory
+// @Produce      json
+// @Param        store_id  query     int     true   "Store ID"
+// @Param        film_id   query     int     true   "Film ID"
+// @Success      200       {object}  inventory.InventoryAvailability
+// @Failure      404       {object}  map[string]interface{}  "Not Found, available=false"
+// @Failure      500       {string}  string  "Internal Server Error"
+// @Router       /inventory/available [get]
 func (h *Handler) GetInventoryAvailable(w http.ResponseWriter, r *http.Request) {
-	// GET /inventory/available?film_id=1&store_id=2
 	w.Header().Set("Content-Type", "application/json")
 
 	var err error

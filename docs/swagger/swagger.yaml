@@ -63,6 +63,70 @@ definitions:
       last_name:
         type: string
     type: object
+  film.Film:
+    properties:
+      description:
+        type: string
+      language:
+        type: string
+      rating:
+        type: string
+      release_year:
+        type: integer
+      title:
+        type: string
+    type: object
+  film.FilmWithActorsCategories:
+    properties:
+      actors:
+        items:
+          type: string
+        type: array
+      categories:
+        items:
+          type: string
+        type: array
+      description:
+        type: string
+      language:
+        type: string
+      rating:
+        type: string
+      release_year:
+        type: integer
+      title:
+        type: string
+    type: object
+  inventory.Inventory:
+    properties:
+      address_id:
+        type: integer
+      film_id:
+        type: integer
+      inventory_id:
+        type: integer
+      last_update:
+        type: string
+      phone:
+        type: string
+      store_id:
+        type: integer
+      title:
+        type: string
+    type: object
+  inventory.InventoryAvailability:
+    properties:
+      available:
+        type: boolean
+      film_id:
+        type: integer
+      inventory_id:
+        type: integer
+      store_id:
+        type: integer
+      title:
+        type: string
+    type: object
   payment.Payment:
     properties:
       amount:
@@ -104,9 +168,210 @@ definitions:
       title:
         type: string
     type: object
+  store.StoreInventorySummary:
+    properties:
+      store_id:
+        type: integer
+      title:
+        type: string
+      title_count:
+        type: integer
+    type: object
 info:
   contact: {}
 paths:
+  /films:
+    get:
+      description: Returns a list of all films
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/film.Film'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: List all films
+      tags:
+      - films
+  /films/{id}:
+    get:
+      description: Returns a single film by its ID
+      parameters:
+      - description: Film ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/film.Film'
+        "400":
+          description: Invalid film ID
+          schema:
+            type: string
+        "404":
+          description: Film not found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get a film by ID
+      tags:
+      - films
+  /films/{id}/with-actors-categories:
+    get:
+      description: Returns a film along with its actors and categories
+      parameters:
+      - description: Film ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/film.FilmWithActorsCategories'
+        "400":
+          description: Invalid film ID
+          schema:
+            type: string
+        "404":
+          description: Film not found
+          schema:
+            type: string
+      summary: Get film with actors and categories by ID
+      tags:
+      - films
+  /films/search:
+    get:
+      description: Returns a list of films matching the title query parameter
+      parameters:
+      - description: Film title to search for
+        in: query
+        name: title
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/film.Film'
+            type: array
+        "400":
+          description: Missing title query parameter
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Search films by title
+      tags:
+      - films
+  /inventory:
+    get:
+      description: Retrieve inventory items. Optionally filter by store_id query param.
+      parameters:
+      - description: Store ID to filter inventory
+        in: query
+        name: store_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/inventory.Inventory'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get inventory
+      tags:
+      - inventory
+  /inventory/available:
+    get:
+      description: Check if a specific film is available in a given store
+      parameters:
+      - description: Store ID
+        in: query
+        name: store_id
+        required: true
+        type: integer
+      - description: Film ID
+        in: query
+        name: film_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/inventory.InventoryAvailability'
+        "404":
+          description: Not Found, available=false
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Check inventory availability
+      tags:
+      - inventory
+  /stores/{id}/inventory/summary:
+    get:
+      description: Returns a summary count of inventory for a given store ID
+      parameters:
+      - description: Store ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/store.StoreInventorySummary'
+            type: array
+        "400":
+          description: Invalid store ID
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get store inventory summary
+      tags:
+      - stores
   /v1/customers:
     get:
       description: get all customers
